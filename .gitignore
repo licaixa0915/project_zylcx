@@ -39,6 +39,10 @@ build/
 ehthumbs.db
 Thumbs.db
 
+*.zip
+*.rar
+*.tar
+
 /.settings/
 /target/
 
@@ -50,6 +54,6 @@ Thumbs.db
 *.dex  
 
 # Eclipse project files  
-.classpath  
-.project  
-.DS_Store  
+.classpath
+.project
+.DS_Store

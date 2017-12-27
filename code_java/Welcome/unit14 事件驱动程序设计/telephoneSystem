@@ -1,0 +1,217 @@
+系统体系结构:
+ Architecture ::= 
+	{
+		Interface-spec ::= 
+		 {
+   			portA1 extends interface-asterisk is		// 接口继承关系
+			{
+			 send : 		// 发出的消息集合
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync build_connect(parameter-list)
+			 receive : 		// 接受的消息集合
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync accept_connect(parameter-list)
+			}
+			portO1 extends interface-OPC is		
+			{
+			 send : 	
+			 	message-spec ::= asyn ask_broadcast(parameter-list)	
+			 	message-spec ::= asyn refuse_broadcast(parameter-list)	
+			 	message-spec ::= asyn build_broadcast(parameter-list)	
+			 receive :  	
+			 	message-spec ::= asyn ask_broadcast(parameter-list)	
+			 	message-spec ::= asyn refuse_broadcast(parameter-list)	
+			 	message-spec ::= asyn accept_broadcast(parameter-list)
+			}
+			portT1 extends interface-telephone is		
+			{
+			 send : 		
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync accept_connect(parameter-list)
+			 receive : 	
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync build_connect(parameter-list)
+			}
+			portI1 extends interface-interphone is		
+			{
+			 send : 		
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync accept_connect(parameter-list)
+			 receive : 	
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync build_connect(parameter-list)	
+			}
+			portI2 extends interface-interphone is		
+			{
+			 send : 	
+			 	message-spec ::= asyn ask_broadcast(parameter-list)	
+			 	message-spec ::= asyn refuse_broadcast(parameter-list)	
+			 	message-spec ::= asyn accept_broadcast(parameter-list)	
+			 receive : 
+			 	message-spec ::= asyn ask_broadcast(parameter-list)	
+			 	message-spec ::= asyn refuse_broadcast(parameter-list)	
+			 	message-spec ::= asyn build_broadcast(parameter-list)		
+			}
+			portV1 extends interface-videophone is		
+			{
+			 send : 		
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync accept_connect(parameter-list)
+			 receive : 	
+			 	message-spec ::= sync ask_connect(parameter-list)
+			 	message-spec ::= sync refuse_connect(parameter-list)
+			 	message-spec ::= sync build_connect(parameter-list)		
+			}
+			
+			interface-list ::= portA1, portO1, portT1, portI1, portI2, portV1	  // 接口列表
+			parameter-list ::= (source, destination, type, operate)
+			  source ::= direction source_ipaddress
+			  destination ::= direction destination_ipaddress {destination1_ipaddress, destination2_ipaddress, ...}
+			  type ::= direction connect{, broadcast}
+			  operate ::= direction ask{,refuse, accept, build}
+			direction ::= in out
+		 }
+		 
+		Component-spec		// 构件规约
+		 {
+		  Asterisk构件:
+ 			component-spec ::=
+  			  {
+  				component Asterisk provides interface-asterisk is		// 接口部分
+  				structure ::=		// 结构部分 
+  				  {
+  				 	reference : none		// 引用的构件
+  				 	consistof :		// 构件实例声明
+  				 	  {Asterisk asterisk;}
+  				 	alias :		//  消息过滤表
+  		 			  {
+  		 			    asterisk.message-name to new-name;
+  		 			    asterisk.message-name to null;
+  		 			  }
+  				 	registry :		// 构件-消息响应登记表 
+  		 			  {(ask_connect, asterisk); (build_connect, asterisk); (refuse_connect, asterisk);}
+  				  }
+  				behavior ::=		// 行为部分
+  				  {
+  				    (wait, ask_connect, source != null, accept, wait);
+  				    (wait, ask_connect, source != null, refuse, wait);
+  				  }
+ 		      }
+ 
+		  OPC构件:
+ 	 	    component-spec ::=
+  		      {
+  			    component OPC provides interface-OPC is		
+  		        structure ::=		
+  			      {
+  			  	    reference : none		
+  		 	   	    consistof :		
+  		 	          {OPC opc;}
+  		 		    alias :		
+  		 	          {
+  		 	  		    opc.message-name to new-name;
+  		 	 		    opc.message-name to null;
+  		 		      }
+  		 	        registry :		
+  		 	          {(ask_broadcast, opc); (build_broadcast, opc); (refuse_broadcast, opc);}
+  		          }
+  		        behavior ::=		
+  			      {
+  				    (wait, ask_broadcast, source != null, accept, wait);
+  				    (wait, ask_broadcast, source != null, refuse, wait);
+  				  }
+              }
+  
+          Telephone构件:
+ 		    component-spec ::=
+ 		      {
+  			    component Telephone provides interface-telephone is		
+  			    structure ::=		
+  		          {
+  		 	        reference : none		
+  		 		    consistof :		
+  		 	          {Telephone telephone;}
+  		 	        alias :		
+  		 	          {
+  		 	            telephone.message-name to new-name;
+  		 	            telephone.message-name to null;
+  		 	          }
+  		 	        registry :		
+  		 	          {(ask_connect, telephone); (accept_connect, telephone); (refuse_connect, telephone);}
+  		          }
+  		        behavior ::=		
+  		          {
+  				    (wait, ask_connect, source != null, accept, wait);
+  				    (wait, build_connect, source != null, accept, busy);
+  				    (busy, ask_connect, source != null, refuse, busy);
+  				  }
+              }
+  
+          Interphone构件:
+    	    component-spec ::=
+  			  {
+  				component Interphone provides interface-interphone is	
+  				structure ::=		
+  			 	  {
+  		 			reference : none		
+  		 			consistof :		
+  		 			  {Interphone interphone;}
+  		 			alias :		
+  		 	 		  {
+  		 	 			interphone.message-name to new-name;
+  		 	  			interphone.message-name to null;
+  		 	 		  }
+  		 			registry :		
+  		 	 		  {(ask_connect, interphone); (accept_connect, interphone); (refuse_connect, interphone); 
+  		 	 		   (ask_broadcast, interphone); (accept_broadcast, interphone); (refuse_broadcast, interphone);}
+  		 		  }
+  			    behavior ::=		
+  		  	      {
+  				    (wait, ask_connect, source != null, accept, wait);
+  				    (wait, build_connect, source != null, accept, busy);
+  				    (busy, ask_connect, source != null, refuse, busy);
+  				    (wait, ask_broadcast, source != null, accept, wait);
+  				    (wait, build_broadcast, source != null, accept, busy);
+  				    (busy, ask_broadcast, source != null, refuse, busy);
+  				    (busy, ask_broadcast, source != null, accpet, busy);
+  				  }
+  			  }
+  
+		  Videophone构件:
+ 			component-spec ::=
+  			  {
+  				component Videophone provides interface-videophone is		
+  				structure ::=	
+  		 		  {
+  		 			reference : none		
+  		 			consistof :		
+  		 	 		  {Videophone videophone;}
+  		 			alias :		
+  		 	 		  {
+  		 	  			videophone.message-name to new-name;
+  		 	  			videophone.message-name to null;
+  		 	 		  }
+  		 			registry :		
+  		 	 		  {(ask_connect, videophone); (accept_connect, videophone); (refuse_connect, videophone);}
+  		 	  	  }
+  			    behavior ::=		
+  		 		  {
+  				    (wait, ask_connect, source != null, accept, wait);
+  				    (wait, build_connect, source != null, accept, busy);
+  				    (busy, ask_connect, source != null, refuse, busy);
+  				  }
+  		 	  }
+		 }
+		| Component-impl		// 构件实现(使用高级编程语言实现)
+	}
+	
+	System as telephoneSystem		// 通话系统    
+
+	

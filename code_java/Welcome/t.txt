@@ -1,0 +1,25 @@
+import javax.swing.JOptionPane;
+
+public class PalindromeIgnoreNonAlphanumeric {
+ public static void main(String[] args){
+	 String s = JOptionPane.showInputDialog("Enter a string:");
+	 String output = "Ignore nonalphanumeric characters, \nis " + s + " a palindrome? " + isPalindrome(s);
+	 JOptionPane.showMessageDialog(null, output);
+ }
+ public static boolean isPalindrome(String s){
+	 String s1 = filter(s);
+	 String s2 = reverse(s1);
+	 return s1.equals(s2);
+ }
+ public static String filter(String s){
+	 StringBuilder strBuf = new StringBuilder();
+	 for (int i = 0; i < s.length(); i++)
+		 if (Character.isLetterOrDigit(s.charAt(i))) strBuf.append(s.charAt(i));
+	 return strBuf.toString();
+ }
+ public static String reverse(String s){
+	 StringBuilder strBuf = new StringBuilder(s);
+	 strBuf.reverse();
+	 return strBuf.toString();
+ }
+}
