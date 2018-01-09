@@ -1,0 +1,44 @@
+﻿生成启动时间为 2018/1/9 11:23:33。
+     1>项目“C:\licaixia\projects\QTffmpeg\MediaPlayer\MediaPlayer.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>CustomBuild:
+         Moc'ing mediaplayer.h...
+         Uic'ing mediaplayer.ui...
+         Moc'ing VideoSlider.h...
+         Rcc'ing mediaplayer.qrc...
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include /I.\GeneratedFiles\Debug /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtCore /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtGui /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtMultimedia /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtWidgets /I..\include /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /D QT_MULTIMEDIA_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\Debug\moc_mediaplayer.cpp GeneratedFiles\Debug\moc_VideoSlider.cpp main.cpp mediaplayer.cpp VideoSlider.cpp VideoTread.cpp VideoWidget.cpp XFFmpeg.cpp
+         moc_mediaplayer.cpp
+         moc_VideoSlider.cpp
+         main.cpp
+     1>c:\licaixia\projects\qtffmpeg\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         mediaplayer.cpp
+     1>c:\licaixia\projects\qtffmpeg\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         VideoSlider.cpp
+         VideoTread.cpp
+     1>c:\licaixia\projects\qtffmpeg\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         VideoWidget.cpp
+     1>c:\licaixia\projects\qtffmpeg\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         XFFmpeg.cpp
+     1>c:\licaixia\projects\qtffmpeg\include\libavutil\rational.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+         正在生成代码...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I.\GeneratedFiles /I. /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include /I.\GeneratedFiles\Debug /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtCore /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtGui /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtMultimedia /IC:\Qt\Qt5.6.3\5.6.3\msvc2013\include\QtWidgets /I..\include /Zi /nologo /W1 /WX- /Od /Oy- /D UNICODE /D WIN32 /D WIN64 /D QT_DLL /D QT_CORE_LIB /D QT_GUI_LIB /D QT_MULTIMEDIA_LIB /D QT_WIDGETS_LIB /Gm- /EHsc /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt GeneratedFiles\qrc_mediaplayer.cpp
+         qrc_mediaplayer.cpp
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.1\bin\x86\rc.exe /l"0x0409" /nologo /fo"Debug\MediaPlayer.res" MediaPlayer.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\licaixia\projects\QTffmpeg\MediaPlayer\Win32\Debug\\MediaPlayer.exe" /NOLOGO /LIBPATH:..\lib /LIBPATH:C:\Qt\Qt5.6.3\5.6.3\msvc2013\lib qtmaind.lib Qt5Cored.lib Qt5Guid.lib Qt5Multimediad.lib Qt5Widgetsd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\licaixia\projects\QTffmpeg\MediaPlayer\Win32\Debug\MediaPlayer.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\licaixia\projects\QTffmpeg\MediaPlayer\Win32\Debug\MediaPlayer.lib" /MACHINE:X86 /SAFESEH:NO Debug\MediaPlayer.res
+         Debug\moc_mediaplayer.obj
+         Debug\moc_VideoSlider.obj
+         Debug\qrc_mediaplayer.obj
+         Debug\main.obj
+         Debug\mediaplayer.obj
+         Debug\VideoSlider.obj
+         Debug\VideoTread.obj
+         Debug\VideoWidget.obj
+         Debug\XFFmpeg.obj
+         MediaPlayer.vcxproj -> C:\licaixia\projects\QTffmpeg\MediaPlayer\Win32\Debug\MediaPlayer.exe
+     1>已完成生成项目“C:\licaixia\projects\QTffmpeg\MediaPlayer\MediaPlayer.vcxproj”(Rebuild 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:15.82
