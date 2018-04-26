@@ -1,0 +1,50 @@
+void HeapAdjust(int arr[], int len, int unleaf)
+{
+    if(len<=0 || unleaf<=0)
+    return;
+    if(unleaf>len/2) //exit of recursive
+    return;
+    int lchild=2*unleaf;
+    int rchild=2*unleaf+1;
+    int max=unleaf;
+    int tmp;
+
+    if(lchild<=len && arr[lchild]>arr[max])
+    max=lchild;
+    if(rchild<=len && arr[rchild]>arr[max])
+    max=rchild;
+
+    if(max!=unleaf)
+    { 
+       tmp=arr[unleaf];
+       arr[unleaf]=arr[max];
+       arr[max]=tmp;
+       HeapAdjust(arr,len,max); //in case of invalid heap due to adjust 
+    }
+}
+
+void BigHeapBuild(int arr[], int len)
+{
+   for(int i=len/2; i>=1; i--) //from the 1st un-leaf node
+    HeapAdjust(arr,len,i);
+}
+
+void HeapSort(int arr[], int len)
+{//leave arr[0] blank, start from arr[1]
+//to use full-tree's childs relationship
+   int tmp;
+   if(arr==NULL || len<=0)
+    return;
+
+   BigHeapBuild(arr,len);
+   //adjust heap
+   for(int i=len; i>1; i--)//when i=2, no need to adjust again
+   {
+     //exchange root with the i node
+       tmp=arr[i];
+       arr[i]=arr[1];
+       arr[1]=tmp;
+     //Adjust heap
+        HeapAdjust(arr,i-1,1);
+   }
+}
