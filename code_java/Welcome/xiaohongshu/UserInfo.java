@@ -6,7 +6,7 @@ public class UserInfo {
 	private String remark;
 
 	public UserInfo() {
-		// TODO Auto-generated constructor stub
+		// Auto-generated constructor stub
 	}
 	
 	/**

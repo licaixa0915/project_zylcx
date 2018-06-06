@@ -15,7 +15,7 @@ public class TestJDBC {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             System.out.println("can not found driver");
             e.printStackTrace();
         }
@@ -25,7 +25,7 @@ public class TestJDBC {
                 System.out.println("connection successful");
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             System.out.println("connection fail");
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class TestJDBC {
                 	+ ", password："+ u.getPassword() + ", remark：" + u.getRemark());
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             e.printStackTrace();
         }finally{
             // 释放资源
@@ -66,7 +66,7 @@ public class TestJDBC {
                 ps.close();
                 conn.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                //  Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -92,14 +92,14 @@ public class TestJDBC {
             System.out.println(row + " " + user.getUserId() + " " + user.getUserName()
                   + " " + user.getPassword() + " " + user.getRemark());
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             e.printStackTrace();
         }finally{
             try {
                 ps.close();
                 conn.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                //  Auto-generated catch block
                 e.printStackTrace();
             }
             
@@ -127,14 +127,14 @@ public class TestJDBC {
             System.out.println(row + " " + user.getUserId() + " " + user.getUserName()
             	+ " " + user.getPassword() + " " + user.getRemark());
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             e.printStackTrace();
         }finally{
             try {
                 ps.close();
                 conn.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                //  Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -157,7 +157,7 @@ public class TestJDBC {
             row = ps.executeUpdate();
             System.out.println(row);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             e.printStackTrace();
         }finally{
             //释放资源
@@ -165,7 +165,7 @@ public class TestJDBC {
                 ps.close();
                 conn.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                //  Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -185,7 +185,7 @@ public class TestJDBC {
             row = ps.executeUpdate();
             System.out.println(row);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             e.printStackTrace();
         }finally{
             //释放资源
@@ -193,7 +193,7 @@ public class TestJDBC {
                 ps.close();
                 conn.close();
             } catch (SQLException e) {
-                // TODO Auto-generated catch block
+                //  Auto-generated catch block
                 e.printStackTrace();
             }
         }

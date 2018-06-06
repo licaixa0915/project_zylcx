@@ -12,7 +12,7 @@ typedef struct node
 /*****************************************
  *函数名称:farsight_createEmptyLinkList
  *函数作用:创建一个空链表,返回头节点的指针
- *函数入参:void 
+ *函数入参:void
  *函数出参:void
  *函数返回值:S_LINKNODE * 头节点指针
  *作者:licaixia
@@ -96,7 +96,7 @@ int farsight_addNodeToTail(S_LINKNODE *pstLinkHead, datatype data)
 
     /*(2) 填充data域*/
     pstLinkNode->data = data;
-    
+
     /*(3) 遍历链表到链表尾巴，将节点插入到尾节点后
      *    3.1 尾节点的指针域指向新节点
      *    3.2 新节点指针域置NULL
@@ -166,7 +166,7 @@ void farsight_sort(S_LINKNODE *pstLinkHead)
         }
 
     }
-    
+
     return;
 }
 
@@ -186,7 +186,7 @@ int farsight_insertNodeToOderedList(S_LINKNODE *pstLinkHead, datatype data)
 
     /*(2)  将插入数据存放数据新结点数据域*/
     pstLinkNode->data = data;
-    
+
     /* (3)  循环找到插入位置前一个节点,p。*/
     /* 注：p指向当前节点，单我们比较是后一个节点的数据p->next-data*/
     while (NULL != p->pNext)
@@ -228,7 +228,7 @@ void farsight_reverseLinkList(S_LINKNODE* pstLinkHead)
     /*(1) 定义指针变量p，保存第一个有效数据结点的地址。*/
     S_LINKNODE *p = pstLinkHead->pNext;
     S_LINKNODE *q = NULL;
-    
+
     /*(2) 并把头节点有效数据结点的指针域置为NULL。*/
     pstLinkHead->pNext = NULL;
     while (NULL != p)
@@ -255,14 +255,18 @@ void farsight_mergeTwoLinkList(S_LINKNODE *pstLinkListA, S_LINKNODE*pstLinkListB
             pPre->pNext = q;
             q = q->pNext;
             pPre->pNext->pNext = p;
+            pPre = pPre->pNext;
         }
-        pPre = p;
-        p = p->pNext;
+        else
+        {
+            pPre = p;
+            p = p->pNext;
+        }
     }
 
     if (NULL == p && NULL != q)
     {
-        p =q;    
+        pPre->pNext = q;
     }
 
     return;
@@ -286,11 +290,10 @@ int farsight_judgeRingInLinkList(S_LINKNODE*pstLinkHead)
 
     return 0;
 }
-int main(int argc, const char *argv[])
+int main(int argc, char *argv[])
 {
 
-    /*
-     * S_LINKNODE *pstLinkHead = NULL;
+    S_LINKNODE *pstLinkHead = NULL;
     S_LINKNODE *pstLinkHeadB = NULL;
 
     pstLinkHead = farsight_createEmptyLinkList();
@@ -321,7 +324,7 @@ int main(int argc, const char *argv[])
     //farsight_reverseLinkList(pstLinkHead);
     farsight_printLinkList(pstLinkHead);
 
-    
+
     pstLinkHeadB = farsight_createEmptyLinkList();
     if (NULL == pstLinkHeadB)
     {
@@ -330,18 +333,18 @@ int main(int argc, const char *argv[])
     }
 
     farsight_addNodeToTail(pstLinkHeadB, 3);
-    farsight_addNodeToTail(pstLinkHeadB, 7);
+    farsight_addNodeToTail(pstLinkHeadB, 100);
     farsight_addNodeToTail(pstLinkHeadB, 15);
     farsight_addNodeToTail(pstLinkHeadB, 16);
     farsight_sort(pstLinkHeadB);
     farsight_printLinkList(pstLinkHeadB);
-    farsight_mergeTwoLinkList(pstLinkHead, pstLinkHeadB);
+    farsight_mergeTwoLinkList(pstLinkHeadB, pstLinkHead);
     farsight_printLinkList(pstLinkHead);
     pstLinkHeadB->pNext->pNext->pNext = pstLinkHeadB->pNext;
     printf("pstLinkHead %d\n", farsight_judgeRingInLinkList(pstLinkHeadB));
-    */
 
-    int N;
+
+    /* int N;
     int i;
     int tmp = 0;
     S_LINKNODE *pstHead = NULL;
@@ -352,7 +355,7 @@ int main(int argc, const char *argv[])
         printf("create failed!\n");
         return 0;
     }
-    
+
     scanf("%d", &N);
     for (i = 0; i < N; i++)
     {
@@ -362,5 +365,6 @@ int main(int argc, const char *argv[])
 
     farsight_printLinkList(pstHead);
     farsight_clearLinkList(&pstHead);
+    */
     return 0;
 }
