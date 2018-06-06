@@ -268,6 +268,7 @@ void farsight_mergeTwoLinkList(S_LINKNODE *pstLinkListA, S_LINKNODE*pstLinkListB
     {
         pPre->pNext = q;
     }
+    pstLinkListA->data += pstLinkListB->data;
 
     return;
 }
@@ -339,9 +340,9 @@ int main(int argc, char *argv[])
     farsight_sort(pstLinkHeadB);
     farsight_printLinkList(pstLinkHeadB);
     farsight_mergeTwoLinkList(pstLinkHeadB, pstLinkHead);
-    farsight_printLinkList(pstLinkHead);
-    pstLinkHeadB->pNext->pNext->pNext = pstLinkHeadB->pNext;
-    printf("pstLinkHead %d\n", farsight_judgeRingInLinkList(pstLinkHeadB));
+    farsight_printLinkList(pstLinkHeadB);
+    // pstLinkHeadB->pNext->pNext->pNext = pstLinkHeadB->pNext;
+    printf("farsight_judgeRingInLinkList %d\n", farsight_judgeRingInLinkList(pstLinkHeadB));
 
 
     /* int N;
