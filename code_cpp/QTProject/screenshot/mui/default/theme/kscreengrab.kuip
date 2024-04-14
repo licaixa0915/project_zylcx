@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<shell xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<theme>
+		<style class="acceleratorDialogTextLabel">
+			<color name="text" value="CommonPalette::text-03"/>
+			<font name="text" family="Microsoft YaHei" pixelSize="14"/>
+		</style>
+		<style class="acceleratorDialogEditButton">
+			<color name="text" value="CommonPalette::theme-common-01"/>
+			<color name="text-hover" value="CommonPalette::theme-common-02" />
+			<color name="text-down" value="CommonPalette::theme-common-03" />	
+		</style>
+		<style class="acceleratorDialogEditLayout">
+			<color name="background" value="CommonPalette::background-02"/>
+		</style>
+    <style class="ColorButton">
+      <color name="background-hover" value="#C6CED633"/>
+      <color name="background-down" value="#C6CED666"/>
+      <color name="background-checked" value="#C6CED64D"/>
+      <color name="border" value="#E4E6EB"/>
+    </style>
+    <style class="KScreenGrabShortcutBox">
+      <color name="background" value="#000000D9"/>
+    </style>
+	</theme>
+	<theme relatedName="2018white_dark" baseRelated="2018white">
+		<style class="acceleratorDialogTextLabel">
+			<color name="text" value="CommonPalette::text-03"/>
+			<font name="text" family="Microsoft YaHei" pixelSize="14"/>
+		</style>
+		<style class="acceleratorDialogEditButton">
+			<color name="text" value="CommonPalette::theme-common-01"/>
+			<color name="text-hover" value="CommonPalette::theme-common-02" />
+			<color name="text-down" value="CommonPalette::theme-common-03" />	
+		</style>
+		<style class="acceleratorDialogEditLayout">
+			<color name="background" value="CommonPalette::background-02"/>
+		</style>
+	</theme>
+</shell>

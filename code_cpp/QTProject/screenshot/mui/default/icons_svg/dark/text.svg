@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>text_dark</title>
+    <g id="text_dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="text">
+            <rect id="矩形" x="0" y="0" width="16" height="16"></rect>
+            <path d="M14.577498,15 L13.4852994,15 L11.5248227,10.00483 L4.57446809,10.00483 L2.50411196,15 L1.41191338,15 L6.06382979,3 C6.36170213,2.3 6.85815603,1 8.04964539,1 C9.24113475,1 9.83687943,2.2 10.035461,3 L14.577498,15 Z M8.04964539,2.1 C7.55319149,2.1 7.25531915,2.7 7.15602837,3 L4.97163121,9.00483001 L11.2269504,9.00483001 L9.04255319,3 C8.74468085,2.5 8.54609929,2.1 8.04964539,2.1 Z" id="形状" fill-opacity="0.85" fill="#FFFFFF" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <rect id="最小化-a" width="16" height="16" x="0" y="0"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <rect width="24" height="24" fill="#000" opacity="0" rx="4"/>
+    <g transform="translate(4 4)">
+      <mask id="最小化-b" fill="#fff">
+        <use xlink:href="#最小化-a"/>
+      </mask>
+      <use fill="#BD10E0" opacity="0" xlink:href="#最小化-a"/>
+      <path fill="#666" fill-rule="nonzero" d="M3.5,10 L12.5,10 C12.7761424,10 13,10.2238576 13,10.5 C13,10.7761424 12.7761424,11 12.5,11 L3.5,11 C3.22385763,11 3,10.7761424 3,10.5 C3,10.2238576 3.22385763,10 3.5,10 Z" mask="url(#最小化-b)"/>
+    </g>
+  </g>
+</svg>

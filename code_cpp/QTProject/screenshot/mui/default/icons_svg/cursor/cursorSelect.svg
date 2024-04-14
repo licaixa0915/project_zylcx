@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28">
+  <defs>
+    <linearGradient id="截图后光标-c" x1="0%" x2="48.007%" y1="0%" y2="84.257%">
+      <stop offset="0%" stop-color="#5FFF81"/>
+      <stop offset="35.497%" stop-color="#37FCFF"/>
+      <stop offset="60.719%" stop-color="#6E7DFF"/>
+      <stop offset="81.363%" stop-color="#E45DDE"/>
+      <stop offset="100%" stop-color="#FF5B87"/>
+    </linearGradient>
+    <polygon id="截图后光标-b" points="3 2.5 15.5 15 8.5 15 3 19.5"/>
+    <filter id="截图后光标-a" width="151.3%" height="144.3%" x="-20%" y="-23%" filterUnits="objectBoundingBox">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="1" result="shadowSpreadOuter1"/>
+      <feOffset in="shadowSpreadOuter1" result="shadowOffsetOuter1"/>
+      <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation=".5"/>
+      <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+      <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.4 0"/>
+    </filter>
+  </defs>
+  <g fill="none">
+    <rect width="28" height="28"/>
+    <rect width="15" height="1" x="12" y="19" fill="#333" rx=".5"/>
+    <rect width="1" height="15" x="19" y="12" fill="#333" rx=".5"/>
+    <g stroke-linejoin="round">
+      <use fill="#000" filter="url(#截图后光标-a)" xlink:href="#截图后光标-b"/>
+      <path fill="url(#截图后光标-c)" fill-rule="evenodd" stroke="#FFF" d="M8.67848169,15.5 L2.5,20.5551214 L2.5,1.29289322 L16.7071068,15.5 L8.67848169,15.5 Z"/>
+    </g>
+  </g>
+</svg>

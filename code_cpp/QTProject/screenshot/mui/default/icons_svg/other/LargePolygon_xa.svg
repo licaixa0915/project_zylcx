@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="272px" height="144px" viewBox="0 0 272 144" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55 (78076) - https://sketchapp.com -->
+    <title>LargePolygon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="3.6%" y1="14.922%" x2="100%" y2="77.096%" id="linearGradient-1">
+            <stop stop-color="#C1DCFF" offset="0%"></stop>
+            <stop stop-color="#B5D1FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-35.7951981%" y1="-143.880165%" x2="109.18536%" y2="236.292696%" id="linearGradient-2">
+            <stop stop-color="#EAB906" offset="0%"></stop>
+            <stop stop-color="#EC640E" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="LargePolygon">
+            <rect id="矩形" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="272" height="144" rx="4"></rect>
+            <g id="编组" transform="translate(32.000000, 32.000000)">
+                <rect id="矩形" x="0" y="0" width="80" height="80"></rect>
+                <rect id="矩形" stroke="#82A9FE" fill="url(#linearGradient-1)" fill-rule="nonzero" x="2.5" y="7.5" width="75" height="65" rx="3"></rect>
+                <path d="M19,18 L44,18 C44.5522847,18 45,18.4477153 45,19 L45,31 C45,31.5522847 45.4477153,32 46,32 L60,32 C60.5522847,32 61,32.4477153 61,33 L61,45 C61,50.5228475 56.5228475,55 51,55 L28,55 C22.4771525,55 18,50.5228475 18,45 L18,19 C18,18.4477153 18.4477153,18 19,18 Z" id="路径" fill="#FFFFFF" fill-rule="nonzero"></path>
+                <path d="M2,65 L78,65 L78,69 C78,71.209139 76.209139,73 74,73 L6,73 C3.790861,73 2,71.209139 2,69 L2,65 Z" id="路径" fill="#82A9FE" fill-rule="nonzero"></path>
+                <path d="M60.5,52.5 L65.5,52.5 C66.0522847,52.5 66.5,52.9477153 66.5,53.5 C66.5,54.0522847 66.0522847,54.5 65.5,54.5 L60.5,54.5 L60.5,59.5 C60.5,60.0522847 60.0522847,60.5 59.5,60.5 C58.9477153,60.5 58.5,60.0522847 58.5,59.5 L58.5,54.5 L53.5,54.5 C52.9477153,54.5 52.5,54.0522847 52.5,53.5 C52.5,52.9477153 52.9477153,52.5 53.5,52.5 L58.5,52.5 L58.5,47.5 C58.5,46.9477153 58.9477153,46.5 59.5,46.5 C60.0522847,46.5 60.5,46.9477153 60.5,47.5 L60.5,52.5 Z" id="路径" stroke="#E0EDFF" fill="#000000" fill-rule="nonzero"></path>
+                <rect id="矩形" fill="#B0CEFF" fill-rule="nonzero" x="5" y="68" width="6" height="2" rx="1"></rect>
+                <rect id="矩形" fill="#B0CEFF" fill-rule="nonzero" x="13" y="68" width="6" height="2" rx="1"></rect>
+                <path d="M59.5,45.5 L59.5,33.5 L43.5,33.5 L43.5,19.5 L19.5,19.5 L19.5,45.5 C19.5,49.918278 23.081722,53.5 27.5,53.5 L51.5,53.5" id="路径" stroke="#4F85FF" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3"></path>
+            </g>
+            <g id="pdf-printer-vip-click" transform="translate(245.000000, 3.000000)" fill-rule="nonzero">
+                <rect id="矩形" fill="#000000" opacity="0" x="0" y="0" width="24" height="24"></rect>
+                <path d="M16.5,22.5 L18.1429788,22.5 L18.1429788,19.2498591 C20.7689949,19.2944535 22.1003347,19.1606705 22.4692602,16.595184 C22.5861247,15.8449497 22.3523956,15.0029036 22.0613799,14.5412209 C21.195207,13.1981442 18.5898139,13.5312902 16.5,13.5496526 L16.5,22.5 Z M18,17.9737181 L18,15.0369258 C19.3208684,14.9867494 20.7187044,14.812608 20.9496081,16.0817745 C21.3294819,18.203939 19.4847354,18.0238944 18,17.9737181 Z M13.5,13.5448417 C13.5167364,16.5228605 13.5167364,19.5219813 13.5355649,22.5 L15,22.5 L15,13.5 C14.5062762,13.5263775 14.0104602,13.5263775 13.5,13.5448417 Z M16.0952436,3 C13.4032483,5.70343137 10.2169295,8.47628795 7.50544461,11.1846213 L7.50544461,3.08903303 L1.5,3 C1.51948956,3.53676471 1.51948956,4.09313726 1.5414153,4.63235295 L3.12250579,4.63235295 L3.12250579,22.5 C9.58816704,15.9901961 16.0343388,9.50490198 22.5,3 L16.0952436,3 Z" id="形状" fill="url(#linearGradient-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>清晰化</title>
+    <g id="清晰化" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M6,13 L6,15 L4,15 L4,13 L6,13 Z M8,11 L8,13 L6,13 L6,11 L8,11 Z M4,11 L4,13 L2,13 L2,11 L4,11 Z M2,9 L2,11 L1,11 L1,9 L2,9 Z M6,9 L6,11 L4,11 L4,9 L6,9 Z M8,7 L8,9 L6,9 L6,7 L8,7 Z M4,7 L4,9 L2,9 L2,7 L4,7 Z M2,5 L2,7 L1,7 L1,5 L2,5 Z M6,5 L6,7 L4,7 L4,5 L6,5 Z M8,3 L8,5 L6,5 L6,3 L8,3 Z M4,3 L4,5 L2,5 L2,3 L4,3 Z M6,1 L6,3 L4,3 L4,1 L6,1 Z" id="形状结合备份-3" fill="#A2AABA"></path>
+        <path d="M8,0 C3.58172199,0 0,3.581722 0,8 C0,12.4182779 3.58172199,16 8,16 C12.418278,16 16,12.4182779 16,8 C16,3.581722 12.418278,0 8,0 Z M8,1 C11.8659933,1 15,4.13400675 15,8 C15,11.8659933 11.8659933,15 8,15 C4.13400674,15 1,11.8659933 1,8 C1,4.13400675 4.13400674,1 8,1 Z" id="椭圆形备份" fill="#262E3E"></path>
+        <rect id="矩形" fill="#262E3E" x="8" y="1" width="1" height="14"></rect>
+    </g>
+</svg>

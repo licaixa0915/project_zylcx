@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon16/马赛克</title>
+    <g id="icon16/马赛克" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="编组">
+            <polygon id="#" points="0 0 16 0 16 16 0 16"></polygon>
+            <path d="M14.2,1 L1.8,1 C1.3581722,1 1,1.3581722 1,1.8 L1,14.2 C1,14.6418278 1.3581722,15 1.8,15 L14.2,15 C14.6418278,15 15,14.6418278 15,14.2 L15,1.8 C15,1.3581722 14.6418278,1 14.2,1 Z M14,2 L14,14 L2,14 L2,2 L14,2 Z" id="路径" fill="#444E63"></path>
+            <path d="M14,8 L14,14 L8,14 L8,8 L14,8 Z M8,2 L8,8 L2,8 L2,2 L8,2 Z" id="形状结合" fill="#444E63" opacity="0.300000012"></path>
+        </g>
+    </g>
+</svg>

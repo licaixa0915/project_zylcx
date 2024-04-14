@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 28 28">
+  <defs>
+    <linearGradient id="截图光标回原点-c" x1="22.967%" x2="48.923%" y1="0%" y2="84.257%">
+      <stop offset="0%" stop-color="#5FFF81"/>
+      <stop offset="35.497%" stop-color="#37FCFF"/>
+      <stop offset="60.719%" stop-color="#6E7DFF"/>
+      <stop offset="81.363%" stop-color="#E45DDE"/>
+      <stop offset="100%" stop-color="#FF5B87"/>
+    </linearGradient>
+    <polygon id="截图光标回原点-b" points="3 2.5 15.5 15 8.5 15 3 19.5"/>
+    <filter id="截图光标回原点-a" width="151.3%" height="144.3%" x="-20%" y="-23%" filterUnits="objectBoundingBox">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="1" result="shadowSpreadOuter1"/>
+      <feOffset in="shadowSpreadOuter1" result="shadowOffsetOuter1"/>
+      <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation=".5"/>
+      <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+      <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.4 0"/>
+    </filter>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <rect width="28" height="28"/>
+    <path fill="#333" fill-rule="nonzero" stroke="#FFF" d="M20.5,24.5 C18.290861,24.5 16.5,22.709139 16.5,20.5 C16.5,18.290861 18.290861,16.5 20.5,16.5 C22.709139,16.5 24.5,18.290861 24.5,20.5 C24.5,22.709139 22.709139,24.5 20.5,24.5 Z M20.5,22.5 C21.6045695,22.5 22.5,21.6045695 22.5,20.5 C22.5,19.3954305 21.6045695,18.5 20.5,18.5 C19.3954305,18.5 18.5,19.3954305 18.5,20.5 C18.5,21.6045695 19.3954305,22.5 20.5,22.5 Z"/>
+    <g fill-rule="nonzero" stroke-linejoin="round">
+      <use fill="#000" filter="url(#截图光标回原点-a)" xlink:href="#截图光标回原点-b"/>
+      <path fill="url(#截图光标回原点-c)" fill-rule="evenodd" stroke="#FFF" d="M8.67848169,15.5 L2.5,20.5551214 L2.5,1.29289322 L16.7071068,15.5 L8.67848169,15.5 Z"/>
+    </g>
+  </g>
+</svg>

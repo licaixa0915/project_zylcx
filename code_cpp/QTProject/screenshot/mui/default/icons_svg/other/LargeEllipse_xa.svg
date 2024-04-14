@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="272px" height="144px" viewBox="0 0 272 144" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55 (78076) - https://sketchapp.com -->
+    <title>LargeEllipse_xa</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="3.6%" y1="14.922%" x2="100%" y2="77.096%" id="linearGradient-1">
+            <stop stop-color="#C1DCFF" offset="0%"></stop>
+            <stop stop-color="#B5D1FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="LargeEllipse_xa">
+            <rect id="矩形" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="272" height="144" rx="4"></rect>
+            <g id="编组" transform="translate(32.000000, 32.000000)">
+                <rect id="矩形" x="0" y="0" width="80" height="80"></rect>
+                <rect id="矩形" stroke="#82A9FE" fill="url(#linearGradient-1)" fill-rule="nonzero" x="2.5" y="7.5" width="75" height="65" rx="3"></rect>
+                <ellipse id="椭圆形" fill="#FFFFFF" fill-rule="nonzero" cx="40" cy="37" rx="26" ry="20"></ellipse>
+                <path d="M40,55.5 C53.5309764,55.5 64.5,47.2172679 64.5,37 C64.5,26.7827321 53.5309764,18.5 40,18.5 C26.4690236,18.5 15.5,26.7827321 15.5,37 C15.5,47.2172679 26.4690236,55.5 40,55.5 Z" id="路径" stroke="#4F85FF" stroke-linecap="round" stroke-dasharray="3"></path>
+                <path d="M2,65 L78,65 L78,69 C78,71.209139 76.209139,73 74,73 L6,73 C3.790861,73 2,71.209139 2,69 L2,65 Z" id="路径" fill="#82A9FE" fill-rule="nonzero"></path>
+                <path d="M65.5,54.5 L70.5,54.5 C71.0522847,54.5 71.5,54.9477153 71.5,55.5 C71.5,56.0522847 71.0522847,56.5 70.5,56.5 L65.5,56.5 L65.5,61.5 C65.5,62.0522847 65.0522847,62.5 64.5,62.5 C63.9477153,62.5 63.5,62.0522847 63.5,61.5 L63.5,56.5 L58.5,56.5 C57.9477153,56.5 57.5,56.0522847 57.5,55.5 C57.5,54.9477153 57.9477153,54.5 58.5,54.5 L63.5,54.5 L63.5,49.5 C63.5,48.9477153 63.9477153,48.5 64.5,48.5 C65.0522847,48.5 65.5,48.9477153 65.5,49.5 L65.5,54.5 Z" id="路径" stroke="#E0EDFF" fill="#000000" fill-rule="nonzero"></path>
+                <rect id="矩形" fill="#B0CEFF" fill-rule="nonzero" x="5" y="68" width="6" height="2" rx="1"></rect>
+                <rect id="矩形" fill="#B0CEFF" fill-rule="nonzero" x="13" y="68" width="6" height="2" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

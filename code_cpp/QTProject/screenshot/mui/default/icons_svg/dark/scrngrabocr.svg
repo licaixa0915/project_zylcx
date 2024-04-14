@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>scrngrabocr_dark</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="16" height="16"></rect>
+        <rect id="path-3" x="0" y="0" width="16" height="16"></rect>
+    </defs>
+    <g id="scrngrabocr_dark" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="scrngrabocr">
+            <g id="Clipped">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="提取文字-a"></g>
+                <path d="M13,13 L11.9,13 L10.8,10 L5.2,10 L4.1,13 L3,13 L6,5 C6.3,4.3 6.8,3 8,3 C9.2,3 9.8,4.2 10,5 L13,13 Z M8,4.1 C7.5,4.1 7.2,4.7 7.1,5 L5.6,9 L10.5,9 L8.9,5 C8.7,4.5 8.5,4.1 8,4.1 Z" id="形状" fill-opacity="0.85" fill="#498FF2" fill-rule="nonzero" mask="url(#mask-2)"></path>
+            </g>
+            <g id="Clipped">
+                <mask id="mask-4" fill="white">
+                    <use xlink:href="#path-3"></use>
+                </mask>
+                <g id="提取文字-a"></g>
+                <path d="M13,2 L3,2 C3,2.552 2.553,3 2,3 L2,13 C2.553,13 3,13.448 3,14 L13,14 C13,13.448 13.447,13 14,13 L14,3 C13.447,3 13,2.552 13,2 Z M13,1 C13,0.448 13.447,0 14,0 L15,0 C15.553,0 16,0.448 16,1 L16,2 C16,2.552 15.553,3 15,3 L15,13 C15.553,13 16,13.448 16,14 L16,15 C16,15.552 15.553,16 15,16 L14,16 C13.447,16 13,15.552 13,15 L3,15 C3,15.552 2.553,16 2,16 L1,16 C0.447,16 0,15.552 0,15 L0,14 C0,13.448 0.447,13 1,13 L1,3 C0.447,3 0,2.552 0,2 L0,1 C0,0.448 0.447,0 1,0 L2,0 C2.553,0 3,0.448 3,1 L13,1 Z M1,2 L2,2 L2,1 L1,1 L1,2 Z M1,15 L2,15 L2,14 L1,14 L1,15 Z M14,15 L15,15 L15,14 L14,14 L14,15 Z M14,2 L15,2 L15,1 L14,1 L14,2 Z" id="形状" fill-opacity="0.85" fill="#FFFFFF" fill-rule="nonzero" mask="url(#mask-4)"></path>
+            </g>
+        </g>
+    </g>
+</svg>
