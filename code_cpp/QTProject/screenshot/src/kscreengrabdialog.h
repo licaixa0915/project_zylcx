@@ -576,19 +576,24 @@ private:
 	QAction*		m_actionDrawRoundedRect = nullptr;
 	QAction*		m_actionDrawEllipse = nullptr;
 	QAction*		m_actionDrawPolygon = nullptr;
+	QAction*		m_actionRoundValue = nullptr;
+    QAction*		m_actionFixedRect = nullptr;
+
 	KScreenGrabMenu*		m_Menu;
-	KScreenGrabToolBar*		m_toolbar;
-	KScreenGrabToolBar*		m_tooleditbar;
-	KScreenGrabToolBar*		m_tooleditmore;
-	KScreenGrabToolBar*		m_toolbarSettings;
-	KScreenGrabToolBarHeader*	m_toolbarHeader;
-	KScreenGrabColorPicker* m_colorPicker;
-	KScreenGrabPen*			m_penSmall;
-	KScreenGrabPen*			m_penMiddle;
-	KScreenGrabPen*			m_penLarge;
-	KScreenGrabFontSetting* m_fontSetting;
-	KScreenGrabHint*		m_hint;
-	KScreenGrabHint*			m_settingHint;
+	KScreenGrabToolBar*		m_toolbar = nullptr;
+	KScreenGrabToolBar*		m_tooleditbar = nullptr;
+	KScreenGrabToolBar*		m_tooleditmore = nullptr;
+	KScreenGrabToolBar*		m_toolbarSettings = nullptr;
+	KScreenGrabToolBarHeader*	m_toolbarHeader = nullptr;
+	KScreenGrabColorPicker* m_colorPicker = nullptr;
+	KScreenGrabPen*			m_penSmall = nullptr;
+	KScreenGrabPen*			m_penMiddle = nullptr;
+	KScreenGrabPen*			m_penLarge = nullptr;
+	KScreenGrabFontSetting* m_fontSetting = nullptr;
+	KScreenGrabHint*		m_hint = nullptr;
+    KScreenGrabHint*        m_settingHint = nullptr;
+    KScreenGrabPen*         m_roundValueBtn = nullptr;
+    KScreenGrabPen*         m_fixedRectBtn = nullptr;
 
 	QPoint			m_screenOffset;
 

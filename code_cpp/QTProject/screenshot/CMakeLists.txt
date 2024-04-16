@@ -22,9 +22,31 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(screenshot
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        src/kscreengrabdialog.cpp src/kscreengrabdialog.h src/kscrngrabdefs.h src/ksvgwidget.cpp src/ksvgwidget.h src/messageboxdialog.cpp src/messageboxdialog.h
-        src/screengrab_colorpicker.cpp src/screengrab_colorpicker.h src/screengrab_fontsetting.cpp src/screengrab_fontsetting.h src/screengrab_hint.cpp src/screengrab_hint.h src/screengrab_menu.cpp src/screengrab_menu.h src/screengrab_pen.cpp src/screengrab_pen.h src/screengrab_pin.cpp src/screengrab_pin.h src/screengrab_toolbar.cpp src/screengrab_toolbar.h
-        src/windowinfo.h src/windowinfo.mm
+        src/kscreengrabdialog.cpp
+        src/kscreengrabdialog.h
+        src/kscrngrabdefs.h
+        src/ksvgwidget.cpp
+        src/ksvgwidget.h
+        src/messageboxdialog.cpp
+        src/messageboxdialog.h
+        src/screengrab_colorpicker.cpp
+        src/screengrab_colorpicker.h
+        src/screengrab_fontsetting.cpp
+        src/screengrab_fontsetting.h
+        src/screengrab_hint.cpp
+        src/screengrab_hint.h
+        src/screengrab_menu.cpp
+        src/screengrab_menu.h
+        src/screengrab_pen.cpp
+        src/screengrab_pen.h
+        src/screengrab_pin.cpp
+        src/screengrab_pin.h
+        src/screengrab_toolbar.cpp
+        src/screengrab_toolbar.h
+        src/windowinfo.h
+        src/windowinfo.mm
+
+
         mui/default/icons_png.qrc
         mui/default/icons_svg.qrc
     )

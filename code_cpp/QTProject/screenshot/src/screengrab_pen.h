@@ -1,12 +1,21 @@
 #ifndef __SCREENGRAB_PEN_H__
 #define __SCREENGRAB_PEN_H__
-#include <QWidget>
-class KScreenGrabPen : public QWidget
+#include <QPushButton>
+class KScreenGrabPen : public QPushButton
 {
 	Q_OBJECT
 
 public:
-	KScreenGrabPen(int size, QWidget *parent);
+    enum Type
+    {
+        FixSizeRound,
+        VariableRound,
+        FixSizeRect,
+        VariableRect,
+
+        Invalid
+    };
+    KScreenGrabPen(Type type, QWidget *parent, int size = 0);
 	~KScreenGrabPen();
 	void selected(bool select);
 
@@ -17,6 +26,7 @@ protected:
 	void mousePressEvent(QMouseEvent* event);
 	void mouseReleaseEvent(QMouseEvent* event);
 	void mouseMoveEvent(QMouseEvent* event);
+    virtual void wheelEvent(QWheelEvent *event) override;
 	void enterEvent(QEvent* event);
 	void leaveEvent(QEvent* event);
 
@@ -26,10 +36,10 @@ signals:
 private:
 	int		m_nSize;
 	QRect	m_rcEdge;
-	QRect	m_rcCenter;
 	bool	m_fSelect;
 	bool	m_fHover;
 	bool	m_fMouseDown;
+    Type    m_type;
 };
 
 #endif // __SCREENGRAB_PEN_H__

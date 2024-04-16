@@ -896,10 +896,10 @@ void KScreenGrabDialog::initToolbarHeader(void)
 			button->setCursor(Qt::ArrowCursor);
 			button->setProperty("qtspyName", QString("DrawPolygon"));
 			button->installEventFilter(m_toolbarHeader);
-				button->setToolTip(QString::fromLocal8Bit(
-					STRINGIFY(<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\"><html><head><meta name = \"qrichtext\" content=\"1\"/><style type = \"text/css\">p{ white-space: pre-wrap; }</style></head><body style = \" font-family:'PingFang SC'; font-size:12px; font-weight:400; font-style:normal;\"><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Left mouse click </span><span style = \"color:#999999;\">to select drawing points, Get polygon area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Left mouse button drag </span><span style = \"color:#999999;\">will record the movement path, Get arbitrary shape area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Click the origin </span><span style = \"color:#999999;\">or </span><span style = \" color:#4f85ff;\">double-click with the mouse anywhere </span><span style = \"color:#999999;\">get the current screenshot area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Click ESC </span><span style = \"color:#999999;\">to exit editing.</span></p>
-					)
-				));
+				// button->setToolTip(QString::fromLocal8Bit(
+				// 	STRINGIFY(<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\"><html><head><meta name = \"qrichtext\" content=\"1\"/><style type = \"text/css\">p{ white-space: pre-wrap; }</style></head><body style = \" font-family:'PingFang SC'; font-size:12px; font-weight:400; font-style:normal;\"><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Left mouse click </span><span style = \"color:#999999;\">to select drawing points, Get polygon area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Left mouse button drag </span><span style = \"color:#999999;\">will record the movement path, Get arbitrary shape area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Click the origin </span><span style = \"color:#999999;\">or </span><span style = \" color:#4f85ff;\">double-click with the mouse anywhere </span><span style = \"color:#999999;\">get the current screenshot area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Click ESC </span><span style = \"color:#999999;\">to exit editing.</span></p>
+				// 	)
+				// ));
 				m_tooltipSizeHints[button] = QSize(dpiScaled(320), dpiScaled(136));
 		}
 	}
@@ -1170,9 +1170,9 @@ void KScreenGrabDialog::initToolbarSetting( void )
 
 
 	// pen width [small, middle, large]
-		m_penSmall = new KScreenGrabPen(dpiScaled(penWidthSmall), this);
-		m_penMiddle = new KScreenGrabPen(dpiScaled(penWidthMiddle), this);
-		m_penLarge = new KScreenGrabPen(dpiScaled(penWidthLarge), this);
+    m_penSmall = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, dpiScaled(penWidthSmall));
+    m_penMiddle = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, dpiScaled(penWidthMiddle));
+    m_penLarge = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, dpiScaled(penWidthLarge));
 	m_penSmall->setCursor(Qt::ArrowCursor);
 	m_penMiddle->setCursor(Qt::ArrowCursor);
 	m_penLarge->setCursor(Qt::ArrowCursor);
@@ -1198,6 +1198,19 @@ void KScreenGrabDialog::initToolbarSetting( void )
 	m_actionPenLarge = m_toolbarSettings->addWidget(m_penLarge);
 	m_actionPenLarge->setVisible(true);
 	m_actionPenLarge->setCheckable(true);
+
+	//round value button
+    m_roundValueBtn = new KScreenGrabPen(KScreenGrabPen::VariableRound, this);
+	m_roundValueBtn->setCursor(Qt::ArrowCursor);
+	m_actionRoundValue = m_toolbarSettings->addWidget(m_roundValueBtn);
+	m_actionRoundValue->setVisible(false);
+    connect(m_roundValueBtn, SIGNAL(penSizeChanged(int)), this, SLOT(penSizeChanged(int)));
+
+    //rect button
+    m_fixedRectBtn = new KScreenGrabPen(KScreenGrabPen::FixSizeRect, this);
+    m_fixedRectBtn->setCursor(Qt::ArrowCursor);
+    m_actionFixedRect = m_toolbarSettings->addWidget(m_fixedRectBtn);
+    m_actionFixedRect->setVisible(false);
 
 	// font setting
 	m_fontSetting = new KScreenGrabFontSetting(this);
@@ -4446,9 +4459,23 @@ QPixmap createMosaic(const QPixmap &originalPixmap, int mosaicSize = 10) {
     return mosaicPixmap;
 }
 
+QPixmap blurPixmap(const QPixmap& srcPixmap, qreal blurRadius) {
+    QGraphicsBlurEffect* blureffect = new QGraphicsBlurEffect;
+    blureffect->setBlurRadius(blurRadius);
+    QGraphicsScene sence;
+    QGraphicsPixmapItem item;
+    item.setPixmap(srcPixmap);
+    item.setGraphicsEffect(blureffect);
+    sence.addItem(&item);
+    QPixmap result(srcPixmap.size());
+    QPainter ptr(&result);
+    sence.render(&ptr);
+    blureffect->deleteLater();
+    return result;
+}
+
 void KScreenGrabDialog::onActionMosaic()
 {
-    qDebug()<<"&&& onActionMosaic";
 	if (m_Menu->isVisible())
 	{
 		hideMenu();
@@ -4465,7 +4492,7 @@ void KScreenGrabDialog::onActionMosaic()
 	m_toolbtnMosaic->setChecked(m_toolbtnMosaic->isChecked());
 	toggleAction(m_toolbtnMosaic);
 
-	selectPenWidth(s_nPenWidthBrush);
+    m_roundValueBtn->selected(true);
 
 	m_fShowSetting = m_toolbtnMosaic->isChecked();
 
@@ -5122,34 +5149,29 @@ void KScreenGrabDialog::drawBrushMouseMove(QPainter& painter)
 
 void KScreenGrabDialog::drawMosaicMove(QPainter& painter)
 {
-    if (m_vecMosaicPoint.isEmpty()) {
+    if (m_vecMosaicPoint.count() <= 1)
         return;
-    }
+    // 创建一个与m_pixmapMosaic相同大小的透明遮罩
+    QPixmap maskPixmap(m_pixmapMosaic.size());
+    maskPixmap.fill(Qt::transparent);
 
-    // painter.save();
-    // painter.setPen(Qt::NoPen);
-    // for (auto m : m_vecMosaicPoint) {
-    //     painter.setBrush(std::get<1>(m));
-    //     painter.drawRect(std::get<0>(m));
-    // }
-    // painter.restore();
+    // 使用 QPainter 在遮罩上绘制鼠标经过的区域
+    QPainter painterPixMap(&maskPixmap);
+    QPen pen = painterPixMap.pen();
+    pen.setWidth(s_nPenWidthBrush);
+    pen.setJoinStyle(Qt::RoundJoin);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setColor(Qt::black);// 使用黑色，表示这部分将是可见的
+    painterPixMap.setPen(pen);
+    painterPixMap.drawPolyline(m_vecMosaicPoint);
 
-    QPainterPath painterpath;
+    // 应用遮罩并更新 QLabel 显示的图片
+    QPixmap resultPixmap = m_pixmapMosaic;
+    resultPixmap.setMask(maskPixmap.createMaskFromColor(Qt::transparent));
 
-    QPoint prePoint = m_vecMosaicPoint[0];
-    for (auto m : m_vecMosaicPoint) {
-        if (m == prePoint)
-            continue;
-        painterpath.cubicTo(prePoint, m, m);
-        prePoint = m;
-    }
     painter.setClipping(true);
-    QPainterPathStroker pathStroker;
-    pathStroker.setWidth(5);
-    QPainterPath strokPath = pathStroker.createStroke(painterpath);
-    painter.setClipPath(strokPath);
-    painter.drawPixmap(0, 0, m_pixmapMosaic);
-    painter.setClipping(false);
+    painter.setClipRegion(QRegion(m_rcSelection));
+    painter.drawPixmap(rect(), resultPixmap);
 }
 
 void KScreenGrabDialog::drawBrushShape(QPainter& painter, QPoint* pts, int nPts, bool bEdit)
@@ -5483,8 +5505,11 @@ void KScreenGrabDialog::setMosaic( const QPoint& pt )
 	{
 		point.setY(m_rcSelection.bottom());
 	}
-
-    m_vecMosaicPoint.push_back(point);
+    qreal ratio = 1;
+#ifdef Q_OS_MACOS
+    ratio = qApp->devicePixelRatio();
+#endif
+    m_vecMosaicPoint.push_back(point * ratio);
 
 	m_nPtCurrent++;
 }
@@ -5948,6 +5973,8 @@ void KScreenGrabDialog::setupToolbarSetting(EditType editMode)
 		// do nothing
 		break;
 	case editRect:
+        m_actionRoundValue->setVisible(false);
+        m_actionFixedRect->setVisible(false);
 		m_actionPenSmall->setVisible(true);
 		m_actionPenMiddle->setVisible(true);
 		m_actionPenLarge->setVisible(true);
@@ -5956,6 +5983,8 @@ void KScreenGrabDialog::setupToolbarSetting(EditType editMode)
 		m_actionColor->setVisible(true);
 		break;
 	case editEllipse:
+        m_actionRoundValue->setVisible(false);
+        m_actionFixedRect->setVisible(false);
 		m_actionPenSmall->setVisible(true);
 		m_actionPenMiddle->setVisible(true);
 		m_actionPenLarge->setVisible(true);
@@ -5964,6 +5993,8 @@ void KScreenGrabDialog::setupToolbarSetting(EditType editMode)
 		m_actionColor->setVisible(true);
 		break;
 	case editArrow:
+        m_actionRoundValue->setVisible(false);
+        m_actionFixedRect->setVisible(false);
 		m_actionPenSmall->setVisible(true);
 		m_actionPenMiddle->setVisible(true);
 		m_actionPenLarge->setVisible(true);
@@ -5972,6 +6003,8 @@ void KScreenGrabDialog::setupToolbarSetting(EditType editMode)
 		m_actionColor->setVisible(true);
 		break;
 	case editBrush:
+        m_actionRoundValue->setVisible(false);
+        m_actionFixedRect->setVisible(false);
 		m_actionPenSmall->setVisible(true);
 		m_actionPenMiddle->setVisible(true);
 		m_actionPenLarge->setVisible(true);
@@ -5980,14 +6013,18 @@ void KScreenGrabDialog::setupToolbarSetting(EditType editMode)
 		m_actionColor->setVisible(true);
 		break;
 	case editMosaic:
-		m_actionPenSmall->setVisible(true);
-		m_actionPenMiddle->setVisible(true);
-		m_actionPenLarge->setVisible(true);
+		m_actionRoundValue->setVisible(true);
+        m_actionFixedRect->setVisible(true);
+		m_actionPenSmall->setVisible(false);
+		m_actionPenMiddle->setVisible(false);
+		m_actionPenLarge->setVisible(false);
 		m_actionSeparator->setVisible(false);
 		m_actionFont->setVisible(false);
 		m_actionColor->setVisible(false);
 		break;
 	case editText:
+        m_actionRoundValue->setVisible(false);
+        m_actionFixedRect->setVisible(false);
 		m_actionPenSmall->setVisible(false);
 		m_actionPenMiddle->setVisible(false);
 		m_actionPenLarge->setVisible(false);
