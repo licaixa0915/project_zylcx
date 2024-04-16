@@ -12,6 +12,7 @@ class QWidget;
 class QLabel;
 QT_END_NAMESPACE
 class KSvgWidget;
+class KScreenGrabTip;
 class KScrnGrabToolButton : public QWidget
 {
 	Q_OBJECT
@@ -68,6 +69,28 @@ public:
 
 protected:
 	virtual QSize sizeHint() const override;
+};
+
+class KScreenGrabDialog;
+class KScreenGrabToolBarHeader : public KScreenGrabToolBar
+{
+    Q_OBJECT
+
+public:
+    KScreenGrabToolBarHeader(KScreenGrabDialog* parent);
+
+public:
+    virtual bool eventFilter(QObject *, QEvent *);
+
+public:
+    void hideTooltip();
+
+private:
+    QWidget* m_moveWidget;
+    QPoint m_down;
+    bool m_moving;
+    KScreenGrabDialog* m_dialog;
+    KScreenGrabTip* m_tooltip;
 };
 
 #endif // __SCREENGRAB_TOOLBAR_H__

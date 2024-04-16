@@ -29,4 +29,30 @@ private:
 	int m_timeout;
 };
 
+class KScreenGrabDoneHint : public QWidget
+{
+    Q_OBJECT
+
+public:
+    KScreenGrabDoneHint(QWidget *parent, int timeout = -1);
+    ~KScreenGrabDoneHint();
+
+    void display();
+    void setText(const QString& text);
+
+protected:
+    void paintEvent(QPaintEvent* event);
+
+private slots:
+    void onTimer();
+
+private:
+    QDateTime m_startTime;
+    QString m_strHintText;
+    //QGraphicsOpacityEffect* m_effect;
+    QTimer* m_timer;
+    int m_timeout;
+    QIcon m_icon;
+};
+
 #endif // SCREENGRAB_HINT_H

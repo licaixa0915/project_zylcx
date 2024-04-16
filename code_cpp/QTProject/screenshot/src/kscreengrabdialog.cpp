@@ -10,17 +10,8 @@
 #include "screengrab_pen.h"
 #include "screengrab_hint.h"
 #include "kscreengrabdialog.h"
-
-inline qreal dpiScaled(qreal value)
-{
-#ifdef Q_OS_MACOS
-    // On mac the DPI is always 72 so we should not scale it
-    return value;
-#else
-    static const qreal scale = qreal(qt_defaultDpiX()) / 96.0;
-    return value * scale;
-#endif
-}
+#include "mscreentools.h"
+#include "mscreengrabtip.h"
 
 #define __STRINGIFY( _x ) # _x
 #define STRINGIFY( _x ) __STRINGIFY( _x )
@@ -57,7 +48,7 @@ namespace
 
 	const int roundedRadius = 20;
 
-	const QSize szToolbarBtn = QSize(dpiScaled(26), dpiScaled(26));
+    const QSize szToolbarBtn = QSize(MScreenTools::dpiScaled(26), MScreenTools::dpiScaled(26));
 }
 
 namespace KScreenGrabHelper
@@ -206,321 +197,6 @@ void setTextFontColor(
 		cursor.setPosition(end, QTextCursor::KeepAnchor);
 		edit->setTextCursor(cursor);
 	}
-}
-
-// -----------------------------------------------------------------------
-#define TRI_Y 8 // 三角形Y坐标
-
-KScreenGrabTip::KScreenGrabTip(KScreenGrabDialog* parent /*= nullptr*/)
-	: QWidget(parent)
-	, m_main(nullptr)
-	, m_label(nullptr)
-	, m_dlg(parent)
-	, m_title(nullptr)
-{
-	setAttribute(Qt::WA_TranslucentBackground);
-	setWindowFlags(Qt::WindowStaysOnTopHint);
-	// bool b = connect(kcoreApp, SIGNAL(notifyAppSkinChange(QString)), this, SLOT(onChangeSkinMode()));
-	// Q_ASSERT(b);
-}
-
-void KScreenGrabTip::reset(QWidget* btn)
-{
-	const QSize* szPtr = m_dlg->getTooltipSizeHint(btn);
-	if (szPtr)
-		setGeometry(QRect(geometry().topLeft(), *szPtr));
-
-	QRect rc = geometry();
-	rc.adjust(dpiScaled(2), dpiScaled(TRI_Y), dpiScaled(-2), dpiScaled(-2));
-
-	if (!m_main)
-	{
-		m_main = new QWidget(this);
-		m_main->installEventFilter(this);
-		QVBoxLayout* vl = new QVBoxLayout(m_main);
-		vl->setSpacing(dpiScaled(8));
-
-		m_title = new QLabel(m_main);
-		m_title->setStyleSheet(" background-color: white; color: black");
-		QFont font;
-		font.setPixelSize(14);
-		font.setFamily("PingFang SC");
-		m_title->setFont(font);
-		m_title->setText(tr("Intro:"));
-		vl->addSpacing(dpiScaled(6));
-		vl->addWidget(m_title);
-
-		m_label = new QLabel(m_main);
-		vl->addWidget(m_label);
-		vl->addStretch();
-	}
-
-	if (!m_main->graphicsEffect())
-	{
-		QGraphicsDropShadowEffect* eff = new QGraphicsDropShadowEffect();
-		eff->setOffset(0);
-		eff->setBlurRadius(dpiScaled(8));
-		m_main->setGraphicsEffect(eff);
-	}
-
-	m_main->setGeometry(QRect(QPoint(dpiScaled(2), dpiScaled(TRI_Y)), rc.size()));
-	m_main->setGeometry(QRect(QPoint(0, 0), rc.size()));
-	m_label->setAlignment(Qt::AlignTop);
-	m_label->setText(m_text);
-	onChangeSkinMode();
-}
-
-bool KScreenGrabTip::eventFilter(QObject * o, QEvent * e)
-{
-	if (o == m_main)
-	{
-		QWidget* w = qobject_cast<QWidget*>(o);
-		if (w)
-		{
-			paintEvent(w, static_cast<QPaintEvent*>(e));
-			return true;
-		}
-	}
-	return QWidget::eventFilter(o, e);
-}
-
-void KScreenGrabTip::onChangeSkinMode()
-{
-	// QColor cl = KDrawHelper::getColorFromTheme("KScreenGrabTip", KDrawHelper::Prop_Text);
-	QColor cl = QColor(Qt::black);
-	QString strText = QString("rgba(%1, %2, %3, %4)").arg(cl.red()).arg(cl.green()).arg(cl.blue()).arg(cl.alpha());
-	if (m_title)
-		m_title->setStyleSheet(QString("QLabel{background-color: transparent;font-family: 'PingFang SC' ;color: %1;font-size:14px;}").arg(strText));
-
-	if (m_label)
-		m_label->setStyleSheet(QString("QLabel{background-color: transparent;font-family: 'PingFang SC' ;color: %1;font-size:12px;}").arg(strText));
-}
-
-void KScreenGrabTip::paintEvent(QWidget* w, QPaintEvent *)
-{
-	// QColor btnCl = KDrawHelper::getColorFromTheme("KScreenGrabTip", KDrawHelper::Prop_Background);
-	QColor btnCl = QColor(Qt::black);
-	QPainter painter(w);
-	painter.setRenderHint(QPainter::Antialiasing);
-	QPainterPath pathT, pathR;
-	pathR.moveTo(dpiScaled(16), dpiScaled(TRI_Y));
-	pathR.lineTo(dpiScaled(16 + 6), 0);
-	pathR.lineTo(dpiScaled(16 + 6 + 6), dpiScaled(TRI_Y));
-
-	QSize sz = w->geometry().size();
-	sz.rwidth() -= 0;
-	sz.rheight() -= dpiScaled(TRI_Y);
-	QRect rrRc(QPoint(0, dpiScaled(TRI_Y)), sz);
-	pathT.addRoundedRect(rrRc, dpiScaled(4), dpiScaled(4));
-
-	painter.fillPath(pathT, btnCl);
-	painter.fillPath(pathR, btnCl);
-
-	painter.setPen(QColor(54,66,90,50));
-	painter.drawLine(rrRc.topLeft().x(), rrRc.topLeft().y() + 2, rrRc.bottomLeft().x(), rrRc.bottomLeft().y() - 2);
-}
-
-void KScreenGrabTip::setText(const QString& text)
-{
-	m_text = text;
-}
-
-// -----------------------------------------------------------------------
-
-KScreenGrabToolBarHeader::KScreenGrabToolBarHeader(KScreenGrabDialog* parent)
-	: KScreenGrabToolBar(parent)
-	, m_moveWidget(nullptr)
-	, m_moving(false)
-	, m_dialog(parent)
-	, m_tooltip(nullptr)
-{
-	QRect rc(0, 0, dpiScaled(450), dpiScaled(88));
-    QRect screenGeo = QApplication::primaryScreen()->geometry();
-	rc.translate(screenGeo.x() + (screenGeo.width() - rc.width()) / 2, screenGeo.y() + 20);
-	setGeometry(rc);
-
-	m_moveWidget = new QWidget(this);
-	QSize fixedSize = QSize(dpiScaled(22), dpiScaled(88));
-	rc = QRect(size().width() - fixedSize.width(), 0, fixedSize.width(), fixedSize.height());
-	rc.adjust(dpiScaled(1), dpiScaled(1), dpiScaled(-1), dpiScaled(-1));
-	m_moveWidget->setGeometry(rc);
-	m_moveWidget->installEventFilter(this);
-	m_moveWidget->setCursor(Qt::SizeAllCursor);
-}
-
-bool KScreenGrabToolBarHeader::eventFilter(QObject * obj, QEvent * e)
-{
-	if (obj == m_moveWidget)
-	{
-		if (e->type() == QEvent::MouseMove)
-		{
-			QMouseEvent* me = static_cast<QMouseEvent*>(e);
-			QPoint pt = geometry().topLeft() + me->pos() - m_down;
-			move(pt);
-			m_dialog->update();
-			return true;
-		}
-		else if (e->type() == QEvent::MouseButtonPress)
-		{
-			QMouseEvent* me = static_cast<QMouseEvent*>(e);
-			m_moving = true;
-			m_down = me->pos();
-			return true;
-		}
-		else if (e->type() == QEvent::MouseButtonRelease)
-		{
-			m_down = QPoint();
-			m_moving = false;
-			return true;
-		}
-		else if (e->type() == QEvent::Paint)
-		{
-			QPaintEvent* pe = static_cast<QPaintEvent*>(e);
-			QPainter painter(m_moveWidget);
-			painter.drawPixmap(QRect(QPoint(0, 0), m_moveWidget->size()), QPixmap(":icons_svg/other/move.svg"));
-		}
-	}
-	else
-	{
-		QWidget* control = qobject_cast<QWidget*>(obj);
-		if (control)
-		{
-			if (e->type() == QEvent::Enter)
-			{
-				if (!m_tooltip)
-				{
-					m_tooltip = new KScreenGrabTip(m_dialog);
-				}
-				show();
-				QRect rc = control->geometry();
-				QPoint bl = mapTo(m_dialog, rc.bottomLeft());
-				bl.rx() += rc.width() / 2.f - dpiScaled(16);
-				bl.ry() += dpiScaled(8);
-				m_tooltip->setGeometry(QRect(bl, QSize(dpiScaled(226), dpiScaled(116))));
-				m_tooltip->setText(control->toolTip());
-				m_tooltip->reset(control);
-				m_tooltip->show();
-				m_dialog->update();
-				return true;
-			}
-			else if (e->type() == QEvent::Leave)
-			{
-				if (m_tooltip)
-					m_tooltip->hide();
-				m_dialog->update();
-				return true;
-			}
-			else if (e->type() == QEvent::ToolTip)
-			{
-				return true;
-			}
-		}
-	}
-	return KScreenGrabToolBar::eventFilter(obj, e);
-}
-
-void KScreenGrabToolBarHeader::hideTooltip()
-{
-	if (m_tooltip)
-		m_tooltip->hide();
-}
-//------------------------------------------------------------------------
-KScreenGrabDoneHint::KScreenGrabDoneHint(QWidget *parent, int timeout /*= -1*/)
-	: QWidget(parent)
-	, m_timeout(timeout)
-{
-
-	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-	this->setFixedWidth(dpiScaled(102));
-	this->setFixedHeight(dpiScaled(90));
-	m_timer = new QTimer(this);
-	m_icon = QIcon("://res/16x16/success.svg");
-}
-
-KScreenGrabDoneHint::~KScreenGrabDoneHint()
-{
-	if (NULL != m_timer)
-	{
-		delete m_timer;
-		m_timer = NULL;
-	}
-}
-
-void KScreenGrabDoneHint::display()
-{
-	m_startTime = QDateTime::currentDateTime();
-	if (NULL != m_timer)
-	{
-		connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
-		m_timer->start(50);
-	}
-	else
-	{
-	}
-}
-
-void KScreenGrabDoneHint::setText(const QString& text)
-{
-	m_strHintText = text;
-}
-
-void KScreenGrabDoneHint::paintEvent(QPaintEvent* event)
-{
-	QPainter painter(this);
-
-	// QColor bgCl = KDrawHelper::getColorFromTheme("KScreenGrabDoneHint", KDrawHelper::Prop_Background);
-	// QColor textCl = KDrawHelper::getColorFromTheme("KScreenGrabDoneHint", KDrawHelper::Prop_Text, Qt::white);
-	QColor bgCl = QColor("#0D0D0D");
-	QColor textCl = QColor("#FFFFFF");
-
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(bgCl);
-    painter.drawRoundedRect(rect(), 2, 2);
-
-	QRect rcIcon = QRect(rect().left() + 35, rect().top() + 14, 32, 32);
-	QRect rcText = QRect(rect().left() + 9, rect().top() + 54, 84, 22);
-	if (!m_icon.isNull())
-	{
-		m_icon.paint(&painter, rcIcon);
-	}
-
-	QFont ft("PingFang SC");
-	ft.setPixelSize(12);
-	QTextOption option;
-	painter.setRenderHint(QPainter::TextAntialiasing, true);
-	painter.setPen(textCl);
-	painter.setFont(ft);
-	painter.setBrush(Qt::NoBrush);
-	painter.drawText(rcText, m_strHintText);
-}
-
-void KScreenGrabDoneHint::onTimer()
-{
-	int ms = m_startTime.msecsTo(QDateTime::currentDateTime());
-	int time = m_timeout > 0 ? m_timeout : 1500;
-
-	if (ms <= 0)
-	{
-		; // do nothing
-	}
-	else if (ms <= time)
-	{
-
-	}
-	else if (ms <= (time + 500) )
-	{
-
-	}
-	else
-	{
-		this->hide();
-		this->move(-1000, -1000);
-		if (NULL != m_timer)
-		{
-			m_timer->stop();
-		}
-	}
-	update();
 }
 
 // -----------------------------------------------------------------------
@@ -691,7 +367,7 @@ void KScreenGrabDialog::initControls( void )
 	initToolbar();
 	initToolbarSetting();
 	initContextMenu();
-		m_nTextFontSize = dpiScaled(12);
+        m_nTextFontSize = MScreenTools::dpiScaled(12);
 
 	m_colorRect = Qt::red;
 	m_colorEllipse = Qt::red;
@@ -742,13 +418,13 @@ void KScreenGrabDialog::onChangeSkinMode()
 								QToolButton:on{background-color: %10}\
 								QToolButton:hover{background-color: %11}\
 								QToolButton:pressed{background-color: %12}")
-						.arg(dpiScaled(4))
-						.arg(dpiScaled(2))
-						.arg(dpiScaled(0))
-						.arg(dpiScaled(2))
-						.arg(dpiScaled(12))
-						.arg(dpiScaled(8))
-						.arg(dpiScaled(23))
+                        .arg(MScreenTools::dpiScaled(4))
+                        .arg(MScreenTools::dpiScaled(2))
+                        .arg(MScreenTools::dpiScaled(0))
+                        .arg(MScreenTools::dpiScaled(2))
+                        .arg(MScreenTools::dpiScaled(12))
+                        .arg(MScreenTools::dpiScaled(8))
+                        .arg(MScreenTools::dpiScaled(23))
 						.arg(strBg)
 						.arg(strText)
 						.arg(strDown)
@@ -771,9 +447,9 @@ void KScreenGrabDialog::onChangeSkinMode()
 		m_toolbarSettings->setStyleSheet(
 			QString("QToolBar{background-color:%4;border:1px solid %5;border-radius:%1px;padding:%2px;}"
 				"QToolButton{border-style:flat;margin-top:%3px;margin-bottom:%3px;")
-			.arg(dpiScaled(4))
-			.arg(dpiScaled(0))
-			.arg(dpiScaled(0))
+            .arg(MScreenTools::dpiScaled(4))
+            .arg(MScreenTools::dpiScaled(0))
+            .arg(MScreenTools::dpiScaled(0))
 			.arg(strBg)
 			.arg(strBorder));
 	}
@@ -823,7 +499,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 		QAbstractButton* button = qobject_cast<QAbstractButton*>(m_toolbarHeader->widgetForAction(m_actionDrawRect));
 		if (button)
 		{
-			button->setFixedSize(QSize(dpiScaled(100), dpiScaled(72)));
+            button->setFixedSize(QSize(MScreenTools::dpiScaled(100), MScreenTools::dpiScaled(72)));
 			button->setCheckable(true);
 			button->setCursor(Qt::ArrowCursor);
 			button->setProperty("qtspyName", QString("DrawRect"));
@@ -833,7 +509,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 				)
 			));
 			
-			m_tooltipSizeHints[button] = QSize(dpiScaled(206), dpiScaled(116));
+            m_tooltipSizeHints[button] = QSize(MScreenTools::dpiScaled(206), MScreenTools::dpiScaled(116));
 		}
 	}
 	{
@@ -846,7 +522,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 		QAbstractButton* button = qobject_cast<QAbstractButton*>(m_toolbarHeader->widgetForAction(m_actionDrawEllipse));
 		if (button)
 		{
-			button->setFixedSize(QSize(dpiScaled(100), dpiScaled(72)));
+            button->setFixedSize(QSize(MScreenTools::dpiScaled(100), MScreenTools::dpiScaled(72)));
 			button->setCheckable(true);
 			button->setCursor(Qt::ArrowCursor);
 			button->setProperty("qtspyName", QString("DrawEllipse"));
@@ -855,7 +531,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 					STRINGIFY(<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"><html><head><meta name = "qrichtext" content="1"/><style type = "text/css">p { white-space: pre-wrap; } </style></head><body style = " font-family:'PingFang SC'; font-size:12px; font-weight:400; font-style:normal;"><p style = " margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style = " color:#4f85ff;">鼠标左键拖动</span><span style = "color:#999999;">选取屏幕区域; </span></p><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-family:'PingFang SC'; font-size:12px; color:#999999;"> </span></p><p style = " margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style = " color:#4f85ff;">Esc键</span><span style = "color:#999999;">可退出截屏</span></p>
 					)
 				));
-				m_tooltipSizeHints[button] = QSize(dpiScaled(206), dpiScaled(116));
+                m_tooltipSizeHints[button] = QSize(MScreenTools::dpiScaled(206), MScreenTools::dpiScaled(116));
 		}
 	}
 	{
@@ -868,7 +544,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 		QAbstractButton* button = qobject_cast<QAbstractButton*>(m_toolbarHeader->widgetForAction(m_actionDrawRoundedRect));
 		if (button)
 		{
-				button->setFixedSize(QSize(dpiScaled(100), dpiScaled(72)));
+                button->setFixedSize(QSize(MScreenTools::dpiScaled(100), MScreenTools::dpiScaled(72)));
 			button->setCheckable(true);
 			button->setCursor(Qt::ArrowCursor);
 			button->setProperty("qtspyName", QString("DrawRoundedRect"));
@@ -877,7 +553,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 					STRINGIFY(<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd"><html><head><meta name = "qrichtext" content="1"/><style type = "text/css">p{ white-space: pre-wrap; }</style></head><body style = " font-family:'PingFang SC'; font-size:12px; font-weight:400; font-style:normal;"><p style = " margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style = " color:#4f85ff;">鼠标左键拖动</span><span style = "color:#999999;">选取屏幕区域; </span></p><p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-family:'PingFang SC'; font-size:12px; color:#999999;"> </span></p><p style = " margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style = " color:#4f85ff;">Esc键</span><span style = "color:#999999;">可退出截屏</span></p>
 					)
 				));
-				m_tooltipSizeHints[button] = QSize(dpiScaled(206), dpiScaled(116));
+                m_tooltipSizeHints[button] = QSize(MScreenTools::dpiScaled(206), MScreenTools::dpiScaled(116));
 		}
 	}
 
@@ -891,7 +567,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 		QAbstractButton* button = qobject_cast<QAbstractButton*>(m_toolbarHeader->widgetForAction(m_actionDrawPolygon));
 		if (button)
 		{
-				button->setFixedSize(QSize(dpiScaled(100), dpiScaled(72)));
+                button->setFixedSize(QSize(MScreenTools::dpiScaled(100), MScreenTools::dpiScaled(72)));
 			button->setCheckable(true);
 			button->setCursor(Qt::ArrowCursor);
 			button->setProperty("qtspyName", QString("DrawPolygon"));
@@ -900,7 +576,7 @@ void KScreenGrabDialog::initToolbarHeader(void)
 				// 	STRINGIFY(<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\"><html><head><meta name = \"qrichtext\" content=\"1\"/><style type = \"text/css\">p{ white-space: pre-wrap; }</style></head><body style = \" font-family:'PingFang SC'; font-size:12px; font-weight:400; font-style:normal;\"><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Left mouse click </span><span style = \"color:#999999;\">to select drawing points, Get polygon area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Left mouse button drag </span><span style = \"color:#999999;\">will record the movement path, Get arbitrary shape area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Click the origin </span><span style = \"color:#999999;\">or </span><span style = \" color:#4f85ff;\">double-click with the mouse anywhere </span><span style = \"color:#999999;\">get the current screenshot area.</span></p><p style = \" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style = \" color:#4f85ff;\">Click ESC </span><span style = \"color:#999999;\">to exit editing.</span></p>
 				// 	)
 				// ));
-				m_tooltipSizeHints[button] = QSize(dpiScaled(320), dpiScaled(136));
+                m_tooltipSizeHints[button] = QSize(MScreenTools::dpiScaled(320), MScreenTools::dpiScaled(136));
 		}
 	}
 	toggleDrawAction();
@@ -1165,14 +841,14 @@ void KScreenGrabDialog::initToolbarSetting( void )
 	}
 
 	m_toolbarSettings = new KScreenGrabToolBar(this);
-	m_toolbarSettings->setFixedHeight(dpiScaled(30));
-	m_toolbarSettings->setFixedWidth(dpiScaled(245));
+    m_toolbarSettings->setFixedHeight(MScreenTools::dpiScaled(30));
+    m_toolbarSettings->setFixedWidth(MScreenTools::dpiScaled(245));
 
 
 	// pen width [small, middle, large]
-    m_penSmall = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, dpiScaled(penWidthSmall));
-    m_penMiddle = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, dpiScaled(penWidthMiddle));
-    m_penLarge = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, dpiScaled(penWidthLarge));
+    m_penSmall = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, MScreenTools::dpiScaled(penWidthSmall));
+    m_penMiddle = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, MScreenTools::dpiScaled(penWidthMiddle));
+    m_penLarge = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, MScreenTools::dpiScaled(penWidthLarge));
 	m_penSmall->setCursor(Qt::ArrowCursor);
 	m_penMiddle->setCursor(Qt::ArrowCursor);
 	m_penLarge->setCursor(Qt::ArrowCursor);
@@ -1875,7 +1551,7 @@ void KScreenGrabDialog::drawPolygonStartPoint(QPainter& painter)
 		{
 			painter.save();
 			QPainterPath startPointCircle;
-			startPointCircle.addEllipse(QRect(dpiScaled(-8), dpiScaled(-8), dpiScaled(16), dpiScaled(16)));
+            startPointCircle.addEllipse(QRect(MScreenTools::dpiScaled(-8), MScreenTools::dpiScaled(-8), MScreenTools::dpiScaled(16), MScreenTools::dpiScaled(16)));
 			painter.setBrush(colorSelectionEdge);
 
 			QTransform transform;
@@ -1992,7 +1668,7 @@ void KScreenGrabDialog::drawSelection(QPainter& painter, const QBrush& brush, in
 		painter.save();
 		painter.setBrush(brush);
 		painter.setPen(pen);
-		QRect rc = m_rcSelection.adjusted(dpiScaled(2), dpiScaled(2), dpiScaled(-2), dpiScaled(-2));
+        QRect rc = m_rcSelection.adjusted(MScreenTools::dpiScaled(2), MScreenTools::dpiScaled(2), MScreenTools::dpiScaled(-2), MScreenTools::dpiScaled(-2));
 		painter.drawRect(m_rcSelection);
 		painter.restore();
 	}
@@ -2188,8 +1864,8 @@ void KScreenGrabDialog::showTextEdit(const QRect& rc, const QString& text)
 	m_textEdit->setGeometry(rcEdit.adjusted(0, 1, 0, 0));
 	m_textEdit->setMaximumHeight(m_rcSelection.bottom() - rcEdit.top() - 1);
 	m_textEdit->setMaximumWidth(m_rcSelection.right() - rcEdit.left() - 1);
-	m_textEdit->setMinimumHeight(dpiScaled(20));
-	m_textEdit->setMinimumWidth(dpiScaled(30));
+    m_textEdit->setMinimumHeight(MScreenTools::dpiScaled(20));
+    m_textEdit->setMinimumWidth(MScreenTools::dpiScaled(30));
 
 	m_rcTextEdit = rcEdit;
 	m_textEdit->show();
@@ -2889,7 +2565,7 @@ bool KScreenGrabDialog::posInEllipse(const QRect& rc, int nPenWidth, const QPoin
 QRect KScreenGrabDialog::drawResizePoint(QPainter& painter, const QPoint& center, bool bCircle)
 {
 	painter.setRenderHint(QPainter::Antialiasing);
-	int nSize = dpiScaled(6);
+    int nSize = MScreenTools::dpiScaled(6);
 	QRect rect = QRect(center.x() - nSize / 2, center.y() - nSize / 2, nSize, nSize);
 	if (bCircle)
 	{
@@ -2973,11 +2649,11 @@ void KScreenGrabDialog::drawSizeTooptip(QPainter& painter)
 	QString text = QString(tr("%1 * %2")).arg(sz.width()).arg(sz.height());
 
 	QFont font = qApp->font("QToolTip");
-		font.setPointSize(dpiScaled(12));
+        font.setPointSize(MScreenTools::dpiScaled(12));
 
     QFontMetrics fm(font);
-        QSize szText = QSize(dpiScaled(fm.horizontalAdvance(text)), dpiScaled((fm.height())));
-		QSize szTip = QSize(szText.width() + dpiScaled(5), szText.height() + dpiScaled(5));
+        QSize szText = QSize(MScreenTools::dpiScaled(fm.horizontalAdvance(text)), MScreenTools::dpiScaled((fm.height())));
+        QSize szTip = QSize(szText.width() + MScreenTools::dpiScaled(5), szText.height() + MScreenTools::dpiScaled(5));
 	QRect rc = QRect(QPoint(rcSelection.left(), qMax(0,
 		rcSelection.top() - szTip.height() - 4)), szTip);
 
@@ -3818,7 +3494,7 @@ QPoint KScreenGrabDialog::nearestPoint(const QPoint& pt, bool& isOriginPoint)
 {
 	if (m_polySelection.size() > 0)
 	{
-		const int Range = dpiScaled(7);
+        const int Range = MScreenTools::dpiScaled(7);
 		float distance = qSqrt(qPow(pt.x() - m_polySelection[0].x(), 2) + qPow(pt.y() - m_polySelection[0].y(), 2));
 		if (distance < Range)
 		{
@@ -3926,7 +3602,7 @@ void KScreenGrabDialog::relocateToolBar()
 		return;
 	}
 
-		int nGapToolbar = dpiScaled(LOCAL_SCREEN_GRAB_GAP_SELECTION_TOOLBAR);
+        int nGapToolbar = MScreenTools::dpiScaled(LOCAL_SCREEN_GRAB_GAP_SELECTION_TOOLBAR);
 	int nGapBottom = qAbs(m_rcDesktop.bottom() - m_rcSelection.bottom()) + nGapToolbar;
 	int nGapTop = qAbs(m_rcDesktop.top() - m_rcSelection.top()) + nGapToolbar;
 
@@ -3935,7 +3611,7 @@ void KScreenGrabDialog::relocateToolBar()
 
 	// adjust y
 	bool bSelectionBottom = false;
-		if (nGapBottom - nGapToolbar - dpiScaled(5) >
+        if (nGapBottom - nGapToolbar - MScreenTools::dpiScaled(5) >
 		m_toolbar->height() + m_toolbarSettings->height())
 	{
 		ptTarget.setY(m_rcSelection.bottom() + nGapToolbar);
@@ -3982,8 +3658,8 @@ void KScreenGrabDialog::relocateToolBar()
 	if (m_fShowSetting)
 	{
 		QPoint ptSetting = ptTarget;
-		int nGap = dpiScaled(4);
-		int nOffset = dpiScaled(45);
+        int nGap = MScreenTools::dpiScaled(4);
+        int nOffset = MScreenTools::dpiScaled(45);
 		if (bSelectionBottom)
 		{
 			ptSetting.setY(ptTarget.y() + nOffset);
@@ -4214,7 +3890,7 @@ KScreenGrabDialog::HitTestResult KScreenGrabDialog::hitTest( QPoint &pt )
 {
 	HitTestResult ht = htNone;
 
-		QSize szResize = QSize(dpiScaled(4), dpiScaled(4));
+        QSize szResize = QSize(MScreenTools::dpiScaled(4), MScreenTools::dpiScaled(4));
 	QPoint center = m_rcSelection.center();
 
 	// resize region @ 4 corners
@@ -5179,7 +4855,7 @@ void KScreenGrabDialog::drawBrushShape(QPainter& painter, QPoint* pts, int nPts,
 	drawBrush(painter, pts, nPts);
 	if (bEdit)
 	{
-		int nSize = dpiScaled(6);
+        int nSize = MScreenTools::dpiScaled(6);
 		QPoint p1 = pts[0];
 		QPoint p2 = pts[nPts - 1];
 		QRect rect1 = QRect(p1.x() - nSize / 2, p1.y() - nSize / 2, nSize, nSize);
@@ -5569,7 +5245,7 @@ void KScreenGrabDialog::resetTextEdit(const QPoint& pt)
 	}
 	else if (!pt.isNull())
 	{
-				QRect rcEdit(pt, QSize(dpiScaled(30), dpiScaled(20)));
+                QRect rcEdit(pt, QSize(MScreenTools::dpiScaled(30), MScreenTools::dpiScaled(20)));
 
 		rcEdit.moveTop(qMax(m_rcSelection.top() + 1, rcEdit.top()));
 		rcEdit.moveLeft(qMax(m_rcSelection.left() + 1, rcEdit.left()));
@@ -5579,8 +5255,8 @@ void KScreenGrabDialog::resetTextEdit(const QPoint& pt)
 		m_textEdit->setGeometry(rcEdit);
 		m_textEdit->setMaximumHeight(m_rcSelection.bottom() - rcEdit.top() - 1);
 		m_textEdit->setMaximumWidth(m_rcSelection.right() - rcEdit.left() - 1);
-				m_textEdit->setMinimumHeight(dpiScaled(20));
-				m_textEdit->setMinimumWidth(dpiScaled(30));
+                m_textEdit->setMinimumHeight(MScreenTools::dpiScaled(20));
+                m_textEdit->setMinimumWidth(MScreenTools::dpiScaled(30));
 
 		m_rcTextEdit = rcEdit;
 		m_textEdit->show();
@@ -6109,7 +5785,7 @@ void KScreenGrabDialog::showToolBar()
 	QString key = isSingleItem(KscrnGrabHelper::ACF_Ocr) ? "settinghint_ocr_shown_flag" : "settinghint_shown_flag";
 	if (m_flags & KscrnGrabHelper::ACF_Setting && !isSettingHintShown(key))
 	{
-		int wHint = isSingleItem(KscrnGrabHelper::ACF_Ocr) ? dpiScaled(200) : dpiScaled(180);
+        int wHint = isSingleItem(KscrnGrabHelper::ACF_Ocr) ? MScreenTools::dpiScaled(200) : MScreenTools::dpiScaled(180);
 		if (NULL == m_settingHint)
 		{
 			m_settingHint = new KScreenGrabHint(this, 3000);
@@ -6124,20 +5800,20 @@ void KScreenGrabDialog::showToolBar()
 			{
 				tips = tr("you can set screen grab ocr global shortcut here");
 				pt = m_toolbar->geometry().bottomLeft();
-				pt.setX(pt.rx() + dpiScaled(24) - m_settingHint->width() / 2);
-				pt.setY(pt.ry() + dpiScaled(2));
+                pt.setX(pt.rx() + MScreenTools::dpiScaled(24) - m_settingHint->width() / 2);
+                pt.setY(pt.ry() + MScreenTools::dpiScaled(2));
 			}
 			else
 			{
 				pt = m_toolbar->geometry().bottomRight();
-				pt.setX(pt.rx() - dpiScaled(178) - m_settingHint->width() / 2);
-				pt.setY(pt.ry() + dpiScaled(2));
+                pt.setX(pt.rx() - MScreenTools::dpiScaled(178) - m_settingHint->width() / 2);
+                pt.setY(pt.ry() + MScreenTools::dpiScaled(2));
 			}
 		}
 		else
 		{
 			pt = m_rcSelection.bottomLeft();
-			pt += QPoint(0, dpiScaled(2));
+            pt += QPoint(0, MScreenTools::dpiScaled(2));
 		}
 
 		if (pt.x() + m_settingHint->width() > m_rcSelection.right())
@@ -6630,15 +6306,15 @@ void KScreenGrabDialog::actionCopy()
 			if (m_toolbar->isVisible())
 			{
 				pt = m_toolbar->geometry().bottomRight();
-				pt.setX(pt.rx() - dpiScaled(203) - m_hint->width()/2);
-				pt.setY(pt.ry() + dpiScaled(2));
+                pt.setX(pt.rx() - MScreenTools::dpiScaled(203) - m_hint->width()/2);
+                pt.setY(pt.ry() + MScreenTools::dpiScaled(2));
 
 
 			}
 			else
 			{
 				pt = m_rcSelection.bottomLeft();
-				pt += QPoint(0, dpiScaled(2));
+                pt += QPoint(0, MScreenTools::dpiScaled(2));
 			}
 
 			if (pt.x() + m_hint->width() > m_rcSelection.right())

@@ -129,3 +129,103 @@ void KScreenGrabHint::onTimer()
 	}
 	update();
 }
+
+
+//------------------------------------------------------------------------
+KScreenGrabDoneHint::KScreenGrabDoneHint(QWidget *parent, int timeout /*= -1*/)
+    : QWidget(parent)
+    , m_timeout(timeout)
+{
+
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    this->setFixedWidth(dpiScaled(102));
+    this->setFixedHeight(dpiScaled(90));
+    m_timer = new QTimer(this);
+    m_icon = QIcon("://res/16x16/success.svg");
+}
+
+KScreenGrabDoneHint::~KScreenGrabDoneHint()
+{
+    if (NULL != m_timer)
+    {
+        delete m_timer;
+        m_timer = NULL;
+    }
+}
+
+void KScreenGrabDoneHint::display()
+{
+    m_startTime = QDateTime::currentDateTime();
+    if (NULL != m_timer)
+    {
+        connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
+        m_timer->start(50);
+    }
+    else
+    {
+    }
+}
+
+void KScreenGrabDoneHint::setText(const QString& text)
+{
+    m_strHintText = text;
+}
+
+void KScreenGrabDoneHint::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+
+    // QColor bgCl = KDrawHelper::getColorFromTheme("KScreenGrabDoneHint", KDrawHelper::Prop_Background);
+    // QColor textCl = KDrawHelper::getColorFromTheme("KScreenGrabDoneHint", KDrawHelper::Prop_Text, Qt::white);
+    QColor bgCl = QColor("#0D0D0D");
+    QColor textCl = QColor("#FFFFFF");
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(bgCl);
+    painter.drawRoundedRect(rect(), 2, 2);
+
+    QRect rcIcon = QRect(rect().left() + 35, rect().top() + 14, 32, 32);
+    QRect rcText = QRect(rect().left() + 9, rect().top() + 54, 84, 22);
+    if (!m_icon.isNull())
+    {
+        m_icon.paint(&painter, rcIcon);
+    }
+
+    QFont ft("PingFang SC");
+    ft.setPixelSize(12);
+    QTextOption option;
+    painter.setRenderHint(QPainter::TextAntialiasing, true);
+    painter.setPen(textCl);
+    painter.setFont(ft);
+    painter.setBrush(Qt::NoBrush);
+    painter.drawText(rcText, m_strHintText);
+}
+
+void KScreenGrabDoneHint::onTimer()
+{
+    int ms = m_startTime.msecsTo(QDateTime::currentDateTime());
+    int time = m_timeout > 0 ? m_timeout : 1500;
+
+    if (ms <= 0)
+    {
+        ; // do nothing
+    }
+    else if (ms <= time)
+    {
+
+    }
+    else if (ms <= (time + 500) )
+    {
+
+    }
+    else
+    {
+        this->hide();
+        this->move(-1000, -1000);
+        if (NULL != m_timer)
+        {
+            m_timer->stop();
+        }
+    }
+    update();
+}

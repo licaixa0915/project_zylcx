@@ -49,6 +49,12 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         mui/default/icons_png.qrc
         mui/default/icons_svg.qrc
+        src/msettingtoolbarmanager.h
+        src/msettingtoolbarmanager.cpp
+        src/mscreengrabtip.h
+        src/mscreengrabtip.cpp
+        src/mscreentools.h
+        src/mscreentools.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET screenshot APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

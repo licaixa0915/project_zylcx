@@ -6,19 +6,15 @@
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QPainter>
+#include <QApplication>
+#include <QScreen>
+#include <QMouseEvent>
+#include <QDialog>
 #include "screengrab_toolbar.h"
+#include "mscreentools.h"
 #include "ksvgwidget.h"
-
-inline qreal dpiScaled(qreal value)
-{
-#ifdef Q_OS_MACOS
-    // On mac the DPI is always 72 so we should not scale it
-    return value;
-#else
-    static const qreal scale = qreal(qt_defaultDpiX()) / 96.0;
-    return value * scale;
-#endif
-}
+#include "mscreengrabtip.h"
+#include "kscreengrabdialog.h"
 
 //////////////////////////////////////////////////////////////////////////
 KScrnGrabToolButton::KScrnGrabToolButton(QWidget* parent, const QString& text, bool bAction)
@@ -220,5 +216,106 @@ KScreenGrabToolBar::~KScreenGrabToolBar()
 
 QSize KScreenGrabToolBar::sizeHint() const
 {
-	return QToolBar::sizeHint() + QSize(dpiScaled(8), 0);
+    return QToolBar::sizeHint() + QSize(MScreenTools::dpiScaled(8), 0);
 }
+
+
+
+KScreenGrabToolBarHeader::KScreenGrabToolBarHeader(KScreenGrabDialog* parent)
+    : KScreenGrabToolBar(parent)
+    , m_moveWidget(nullptr)
+    , m_moving(false)
+    , m_dialog(parent)
+    , m_tooltip(nullptr)
+{
+    QRect rc(0, 0, MScreenTools::dpiScaled(450), MScreenTools::dpiScaled(88));
+    QRect screenGeo = QApplication::primaryScreen()->geometry();
+    rc.translate(screenGeo.x() + (screenGeo.width() - rc.width()) / 2, screenGeo.y() + 20);
+    setGeometry(rc);
+
+    m_moveWidget = new QWidget(this);
+    QSize fixedSize = QSize(MScreenTools::dpiScaled(22), MScreenTools::dpiScaled(88));
+    rc = QRect(size().width() - fixedSize.width(), 0, fixedSize.width(), fixedSize.height());
+    rc.adjust(MScreenTools::dpiScaled(1), MScreenTools::dpiScaled(1), MScreenTools::dpiScaled(-1), MScreenTools::dpiScaled(-1));
+    m_moveWidget->setGeometry(rc);
+    m_moveWidget->installEventFilter(this);
+    m_moveWidget->setCursor(Qt::SizeAllCursor);
+}
+
+bool KScreenGrabToolBarHeader::eventFilter(QObject * obj, QEvent * e)
+{
+    if (obj == m_moveWidget)
+    {
+        if (e->type() == QEvent::MouseMove)
+        {
+            QMouseEvent* me = static_cast<QMouseEvent*>(e);
+            QPoint pt = geometry().topLeft() + me->pos() - m_down;
+            move(pt);
+            m_dialog->update();
+            return true;
+        }
+        else if (e->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent* me = static_cast<QMouseEvent*>(e);
+            m_moving = true;
+            m_down = me->pos();
+            return true;
+        }
+        else if (e->type() == QEvent::MouseButtonRelease)
+        {
+            m_down = QPoint();
+            m_moving = false;
+            return true;
+        }
+        else if (e->type() == QEvent::Paint)
+        {
+            QPaintEvent* pe = static_cast<QPaintEvent*>(e);
+            QPainter painter(m_moveWidget);
+            painter.drawPixmap(QRect(QPoint(0, 0), m_moveWidget->size()), QPixmap(":icons_svg/other/move.svg"));
+        }
+    }
+    else
+    {
+        QWidget* control = qobject_cast<QWidget*>(obj);
+        if (control)
+        {
+            if (e->type() == QEvent::Enter)
+            {
+                if (!m_tooltip)
+                {
+                    m_tooltip = new KScreenGrabTip(m_dialog);
+                }
+                show();
+                QRect rc = control->geometry();
+                QPoint bl = mapTo(m_dialog, rc.bottomLeft());
+                bl.rx() += rc.width() / 2.f - MScreenTools::dpiScaled(16);
+                bl.ry() += MScreenTools::dpiScaled(8);
+                m_tooltip->setGeometry(QRect(bl, QSize(MScreenTools::dpiScaled(226), MScreenTools::dpiScaled(116))));
+                m_tooltip->setText(control->toolTip());
+                m_tooltip->reset(control);
+                m_tooltip->show();
+                m_dialog->update();
+                return true;
+            }
+            else if (e->type() == QEvent::Leave)
+            {
+                if (m_tooltip)
+                    m_tooltip->hide();
+                m_dialog->update();
+                return true;
+            }
+            else if (e->type() == QEvent::ToolTip)
+            {
+                return true;
+            }
+        }
+    }
+    return KScreenGrabToolBar::eventFilter(obj, e);
+}
+
+void KScreenGrabToolBarHeader::hideTooltip()
+{
+    if (m_tooltip)
+        m_tooltip->hide();
+}
+

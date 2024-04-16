@@ -21,81 +21,8 @@ class KScreenGrabMenu;
 class KGlobalShortcut;
 class KScreenGrabDialog;
 class KWindowInfo;
-class KScreenGrabTip : public QWidget
-{
-	Q_OBJECT
+class KScreenGrabTip;
 
-public:
-	KScreenGrabTip(KScreenGrabDialog* parent = nullptr);
-	void reset(QWidget* btn);
-
-protected:
-	virtual bool eventFilter(QObject *, QEvent *) override;
-
-private:
-	virtual void paintEvent(QWidget*, QPaintEvent *);
-
-private slots:
-	void onChangeSkinMode();
-
-public:
-	void setText(const QString&);
-
-private:
-	KScreenGrabDialog* m_dlg;
-	QWidget* m_main;
-	QString m_text;
-	QLabel* m_label;
-	QLabel* m_title;
-};
-
-class KScreenGrabDoneHint : public QWidget
-{
-	Q_OBJECT
-
-public:
-	KScreenGrabDoneHint(QWidget *parent, int timeout = -1);
-	~KScreenGrabDoneHint();
-
-	void display();
-	void setText(const QString& text);
-
-protected:
-	void paintEvent(QPaintEvent* event);
-
-private slots:
-	void onTimer();
-
-private:
-	QDateTime m_startTime;
-	QString m_strHintText;
-	//QGraphicsOpacityEffect* m_effect;
-	QTimer* m_timer;
-	int m_timeout;
-	QIcon m_icon;
-};
-
-class KScreenGrabDialog;
-class KScreenGrabToolBarHeader : public KScreenGrabToolBar
-{
-	Q_OBJECT
-
-public:
-	KScreenGrabToolBarHeader(KScreenGrabDialog* parent);
-
-public:
-	virtual bool eventFilter(QObject *, QEvent *);
-
-public:
-	void hideTooltip();
-
-private:
-	QWidget* m_moveWidget;
-	QPoint m_down;
-	bool m_moving;
-	KScreenGrabDialog* m_dialog;
-	KScreenGrabTip* m_tooltip;
-};
 class KScreenGrabDialog : public QDialog
 {
     Q_OBJECT
