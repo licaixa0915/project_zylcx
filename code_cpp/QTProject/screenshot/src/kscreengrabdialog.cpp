@@ -12,6 +12,7 @@
 #include "kscreengrabdialog.h"
 #include "mscreentools.h"
 #include "mscreengrabtip.h"
+#include "msettingtoolbarmanager.h"
 
 #define __STRINGIFY( _x ) # _x
 #define STRINGIFY( _x ) __STRINGIFY( _x )
@@ -200,10 +201,10 @@ void setTextFontColor(
 }
 
 // -----------------------------------------------------------------------
-int KScreenGrabDialog::s_nPenWidthRect = penWidthSmall;
-int KScreenGrabDialog::s_nPenWidthEllipse = penWidthSmall;
-int KScreenGrabDialog::s_nArrowSize = penWidthSmall;
-int KScreenGrabDialog::s_nPenWidthBrush = penWidthSmall;
+int KScreenGrabDialog::s_nPenWidthRect = MSettingToolBarManager::penWidthSmall;
+int KScreenGrabDialog::s_nPenWidthEllipse = MSettingToolBarManager::penWidthSmall;
+int KScreenGrabDialog::s_nArrowSize = MSettingToolBarManager::penWidthSmall;
+int KScreenGrabDialog::s_nPenWidthBrush = MSettingToolBarManager::penWidthSmall;
 
 KScreenGrabDialog::KScreenGrabDialog(QWidget* parent, const WId wpsWId,
 	bool isHide, KscrnGrabHelper::ActionFlags flags, DrawShape drawShape)
@@ -211,11 +212,6 @@ KScreenGrabDialog::KScreenGrabDialog(QWidget* parent, const WId wpsWId,
 	m_Menu(NULL),
 	m_toolbar(NULL),
 	m_tooleditbar(NULL),
-	m_toolbarSettings(NULL),
-	m_colorPicker(NULL),
-	m_penSmall(NULL),
-	m_penMiddle(NULL),
-	m_penLarge(NULL),
 	m_fontSetting(NULL),
 	m_hint(NULL),
 	m_settingHint(NULL),
@@ -437,21 +433,6 @@ void KScreenGrabDialog::onChangeSkinMode()
 		if (m_tooleditbar)
 			m_tooleditbar->setStyleSheet(style);
 #endif
-	}
-	if (m_toolbarSettings)
-	{
-		QColor bgCl = QColor("#FFFFFF");
-		QColor bgBorder = QColor("#EEEEEE");
-		QString strBg = QString("rgba(%1, %2, %3, %4)").arg(bgCl.red()).arg(bgCl.green()).arg(bgCl.blue()).arg(bgCl.alpha());
-		QString strBorder = QString("rgba(%1, %2, %3, %4)").arg(bgBorder.red()).arg(bgBorder.green()).arg(bgBorder.blue()).arg(bgBorder.alpha());
-		m_toolbarSettings->setStyleSheet(
-			QString("QToolBar{background-color:%4;border:1px solid %5;border-radius:%1px;padding:%2px;}"
-				"QToolButton{border-style:flat;margin-top:%3px;margin-bottom:%3px;")
-            .arg(MScreenTools::dpiScaled(4))
-            .arg(MScreenTools::dpiScaled(0))
-            .arg(MScreenTools::dpiScaled(0))
-			.arg(strBg)
-			.arg(strBorder));
 	}
 }
 
@@ -835,83 +816,10 @@ void KScreenGrabDialog::initActions( void )
 
 void KScreenGrabDialog::initToolbarSetting( void )
 {
-	if (NULL != m_toolbarSettings)
-	{
-		return;
-	}
-
-	m_toolbarSettings = new KScreenGrabToolBar(this);
-    m_toolbarSettings->setFixedHeight(MScreenTools::dpiScaled(30));
-    m_toolbarSettings->setFixedWidth(MScreenTools::dpiScaled(245));
-
-
-	// pen width [small, middle, large]
-    m_penSmall = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, MScreenTools::dpiScaled(penWidthSmall));
-    m_penMiddle = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, MScreenTools::dpiScaled(penWidthMiddle));
-    m_penLarge = new KScreenGrabPen(KScreenGrabPen::FixSizeRound, this, MScreenTools::dpiScaled(penWidthLarge));
-	m_penSmall->setCursor(Qt::ArrowCursor);
-	m_penMiddle->setCursor(Qt::ArrowCursor);
-	m_penLarge->setCursor(Qt::ArrowCursor);
-	m_penSmall->setProperty("qtspyName", QString("GrabPenSmall"));
-	m_penMiddle->setProperty("qtspyName", QString("GrabPenMiddle"));
-	m_penLarge->setProperty("qtspyName", QString("GrabPenLarge"));
-	connect(m_penSmall, SIGNAL(penSizeChanged(int)), this, SLOT(penSizeChanged(int)));
-	connect(m_penMiddle, SIGNAL(penSizeChanged(int)), this, SLOT(penSizeChanged(int)));
-	connect(m_penLarge, SIGNAL(penSizeChanged(int)), this, SLOT(penSizeChanged(int)));
-
-	QWidget* paddingWidget = new QWidget(this);
-	paddingWidget->setFixedWidth(1);
-	m_toolbarSettings->addWidget(paddingWidget);
-
-	m_actionPenSmall = m_toolbarSettings->addWidget(m_penSmall);
-	m_actionPenSmall->setVisible(true);
-	m_actionPenSmall->setCheckable(true);
-
-	m_actionPenMiddle = m_toolbarSettings->addWidget(m_penMiddle);
-	m_actionPenMiddle->setVisible(true);
-	m_actionPenMiddle->setCheckable(true);
-
-	m_actionPenLarge = m_toolbarSettings->addWidget(m_penLarge);
-	m_actionPenLarge->setVisible(true);
-	m_actionPenLarge->setCheckable(true);
-
-	//round value button
-    m_roundValueBtn = new KScreenGrabPen(KScreenGrabPen::VariableRound, this);
-	m_roundValueBtn->setCursor(Qt::ArrowCursor);
-	m_actionRoundValue = m_toolbarSettings->addWidget(m_roundValueBtn);
-	m_actionRoundValue->setVisible(false);
-    connect(m_roundValueBtn, SIGNAL(penSizeChanged(int)), this, SLOT(penSizeChanged(int)));
-
-    //rect button
-    m_fixedRectBtn = new KScreenGrabPen(KScreenGrabPen::FixSizeRect, this);
-    m_fixedRectBtn->setCursor(Qt::ArrowCursor);
-    m_actionFixedRect = m_toolbarSettings->addWidget(m_fixedRectBtn);
-    m_actionFixedRect->setVisible(false);
-
-	// font setting
-	m_fontSetting = new KScreenGrabFontSetting(this);
-	m_fontSetting->setProperty("qtspyName", "GrabFontSetting");
-	m_fontSetting->setCursor(Qt::ArrowCursor);
-	connect(m_fontSetting, SIGNAL(fontSizeChanged(int)),
-		this, SLOT(fontSizeChanged(int)));
-
-	m_actionFont = m_toolbarSettings->addWidget(m_fontSetting);
-	m_actionFont->setVisible(false);
-
-	// separator
-	m_actionSeparator = m_toolbarSettings->addSeparator();
-	m_toolbarSettings->widgetForAction(m_actionSeparator)->setCursor(Qt::ArrowCursor);
-	m_toolbarSettings->widgetForAction(m_actionSeparator)->setFixedSize(QSize(10, 24));
-
-	// color picker
-	m_colorPicker = new KScreenGrabColorPicker(this);
-	m_colorPicker->setCursor(Qt::ArrowCursor);
-	m_colorPicker->setProperty("qtspyName", QString("GrabColorPicker"));
-	connect(m_colorPicker, SIGNAL(colorChanged(const QColor&)),
-		this, SLOT(colorChanged(const QColor&)));
-
-	m_actionColor = m_toolbarSettings->addWidget(m_colorPicker);
-	m_actionColor->setVisible(true);
+	MSettingToolBarManager::instance()->init(this);
+	connect(MSettingToolBarManager::instance(), &MSettingToolBarManager::penSizeChanged, this, &KScreenGrabDialog::onPenSizeChanged);
+    connect(MSettingToolBarManager::instance(), &MSettingToolBarManager::fontSizeChanged, this, &KScreenGrabDialog::fontSizeChanged);
+    connect(MSettingToolBarManager::instance(), &MSettingToolBarManager::colorChanged, this, &KScreenGrabDialog::colorChanged);
 }
 
 void KScreenGrabDialog::initToolbar( void )
@@ -1735,17 +1643,17 @@ bool KScreenGrabDialog::arrowContaisPos(const QPoint& ptStart, const QPoint& ptE
 
 		switch (nSize)
 		{
-		case penWidthSmall:
+        case MSettingToolBarManager::penWidthSmall:
 			rArrowHeadLength = 10;
 			rArrowHeadWidth = 10;
 			rArrowSideWidth = 3;
 			break;
-		case penWidthMiddle:
+        case MSettingToolBarManager::penWidthMiddle:
 			rArrowHeadLength = 16;
 			rArrowHeadWidth = 16;
 			rArrowSideWidth = 4;
 			break;
-		case penWidthLarge:
+        case MSettingToolBarManager::penWidthLarge:
 			rArrowHeadLength = 20;
 			rArrowHeadWidth = 20;
 			rArrowSideWidth = 5;
@@ -1972,45 +1880,45 @@ void KScreenGrabDialog::changeActionSelect(int nItemId)
 			// do nothing
 			break;
 		case editRect:
-			if (m_toolbtnRect && m_toolbarSettings)
+			if (m_toolbtnRect)
 			{
 				m_toolbtnRect->actionClick();
-				m_toolbarSettings->show();
+                MSettingToolBarManager::instance()->showSettingToolBar();
 			}
 			break;
 		case editEllipse:
-			if (m_toolbtnEllipse && m_toolbarSettings)
+			if (m_toolbtnEllipse)
 			{
 				m_toolbtnEllipse->actionClick();
-				m_toolbarSettings->show();
+                MSettingToolBarManager::instance()->showSettingToolBar();
 			}
 			break;
 		case editArrow:
-			if (m_toolbtnArrow && m_toolbarSettings)
+			if (m_toolbtnArrow)
 			{
 				m_toolbtnArrow->actionClick();
-				m_toolbarSettings->show();
+                MSettingToolBarManager::instance()->showSettingToolBar();
 			}
 			break;
 		case editBrush:
-			if (m_toolbtnBrush && m_toolbarSettings)
+			if (m_toolbtnBrush)
 			{
 				m_toolbtnBrush->actionClick();
-				m_toolbarSettings->show();
+                MSettingToolBarManager::instance()->showSettingToolBar();
 			}
 			break;
 		case editMosaic:
-			if (m_toolbtnMosaic && m_toolbarSettings)
+			if (m_toolbtnMosaic)
 			{
 				m_toolbtnMosaic->actionClick();
-				m_toolbtnMosaic->show();
+                MSettingToolBarManager::instance()->showSettingToolBar();
 			}
 			break;
 		case editText:
-			if (m_toolbtnText && m_toolbarSettings)
+			if (m_toolbtnText)
 			{
 				m_toolbtnText->actionClick();
-				m_toolbarSettings->show();
+                MSettingToolBarManager::instance()->showSettingToolBar();
 			}
 			break;
 		case editFilter:
@@ -3340,7 +3248,7 @@ void KScreenGrabDialog::dragRegion(const QPoint& pt)
 
 void KScreenGrabDialog::moveSelection(const QPoint& pt)
 {
-	m_toolbarSettings->hide();
+    MSettingToolBarManager::instance()->hideSettingToolBar();
 	m_hint->hide();
 
 	QPoint offset = pt - m_ptPressed;
@@ -3612,7 +3520,7 @@ void KScreenGrabDialog::relocateToolBar()
 	// adjust y
 	bool bSelectionBottom = false;
         if (nGapBottom - nGapToolbar - MScreenTools::dpiScaled(5) >
-		m_toolbar->height() + m_toolbarSettings->height())
+		m_toolbar->height() + MSettingToolBarManager::instance()->settingToolBarHeight())
 	{
 		ptTarget.setY(m_rcSelection.bottom() + nGapToolbar);
 		bSelectionBottom = true;
@@ -3654,31 +3562,7 @@ void KScreenGrabDialog::relocateToolBar()
 	if (m_tooleditbar)
 		m_tooleditbar->move(ptTarget + QPoint(0, m_toolbar->height() + 4));
 #endif
-
-	if (m_fShowSetting)
-	{
-		QPoint ptSetting = ptTarget;
-        int nGap = MScreenTools::dpiScaled(4);
-        int nOffset = MScreenTools::dpiScaled(45);
-		if (bSelectionBottom)
-		{
-			ptSetting.setY(ptTarget.y() + nOffset);
-		}
-		else if (ptTarget.y() < m_toolbar->height() + nGap / 2)
-		{
-			ptSetting.setY(ptTarget.y() + nOffset); // do nothing
-		}
-		else if (ptTarget.y() + m_toolbar->height() + m_toolbarSettings->height() > m_rcSelection.top() + nGap)
-		{
-			ptSetting.setY(ptTarget.y() - m_toolbar->height() - m_toolbarSettings->height() -  nGap + nOffset);
-		}
-		m_toolbarSettings->show();
-		m_toolbarSettings->move(ptSetting);
-	}
-	else
-	{
-		m_toolbarSettings->hide();
-	}
+    MSettingToolBarManager::instance()->relocateToolBar(ptTarget, m_toolbar->height(), m_fShowSetting, m_rcSelection, bSelectionBottom);
 }
 
 void KScreenGrabDialog::resetCursor( QPoint &pt )
@@ -4009,7 +3893,7 @@ void KScreenGrabDialog::onActionRect()
 
 	m_editType = editRect;
 
-	m_colorPicker->setColor(m_colorRect);
+	MSettingToolBarManager::instance()->setColorPickerColor(m_colorRect);
 
 	setupToolbarSetting(editRect);
 	relocateToolBar();
@@ -4040,7 +3924,7 @@ void KScreenGrabDialog::onActionEllipse()
 
 	m_editType = editEllipse;
 
-	m_colorPicker->setColor(m_colorEllipse);
+	MSettingToolBarManager::instance()->setColorPickerColor(m_colorEllipse);
 
 	setupToolbarSetting(editEllipse);
 	relocateToolBar();
@@ -4072,7 +3956,7 @@ void KScreenGrabDialog::onActionArrow()
 
 	m_editType = editArrow;
 
-	m_colorPicker->setColor(m_colorArrow);
+	MSettingToolBarManager::instance()->setColorPickerColor(m_colorArrow);
 
 	setupToolbarSetting(editArrow);
 	relocateToolBar();
@@ -4104,7 +3988,7 @@ void KScreenGrabDialog::onActionBrush()
 
 	m_editType = editBrush;
 
-	m_colorPicker->setColor(m_colorBrush);
+	MSettingToolBarManager::instance()->setColorPickerColor(m_colorBrush);
 
 	setupToolbarSetting(editBrush);
 	relocateToolBar();
@@ -4168,7 +4052,7 @@ void KScreenGrabDialog::onActionMosaic()
 	m_toolbtnMosaic->setChecked(m_toolbtnMosaic->isChecked());
 	toggleAction(m_toolbtnMosaic);
 
-    m_roundValueBtn->selected(true);
+    //m_roundValueBtn->selected(true);
 
 	m_fShowSetting = m_toolbtnMosaic->isChecked();
 
@@ -4204,7 +4088,7 @@ void KScreenGrabDialog::onActionText()
 	setEditing();
 	m_editType = editText;
 
-	m_colorPicker->setColor(m_colorText);
+	MSettingToolBarManager::instance()->setColorPickerColor(m_colorText);
 
 	setupToolbarSetting(editText);
 	relocateToolBar();
@@ -4296,8 +4180,7 @@ void KScreenGrabDialog::onMoreEditClicked()
 {
 	if (!m_tooleditbar)
 		return;
-	if (m_toolbarSettings && m_toolbarSettings->isVisible())
-		m_toolbarSettings->hide();
+    MSettingToolBarManager::instance()->hideSettingToolBar();
 	if (m_tooleditbar->isHidden())
 		m_tooleditbar->show();
 	else
@@ -4620,17 +4503,17 @@ void KScreenGrabDialog::drawArrow( QPainter& painter, int nSize, QPoint& ptStart
 
 		switch (nSize)
 		{
-		case penWidthSmall:
+        case MSettingToolBarManager::penWidthSmall:
 			rArrowHeadLength = 10;
 			rArrowHeadWidth = 10;
 			rArrowSideWidth = 3;
 			break;
-		case penWidthMiddle:
+        case MSettingToolBarManager::penWidthMiddle:
 			rArrowHeadLength = 16;
 			rArrowHeadWidth = 16;
 			rArrowSideWidth = 4;
 			break;
-		case penWidthLarge:
+        case MSettingToolBarManager::penWidthLarge:
 			rArrowHeadLength = 20;
 			rArrowHeadWidth = 20;
 			rArrowSideWidth = 5;
@@ -5553,7 +5436,7 @@ void KScreenGrabDialog::updateItemPenWidth(int nSize)
 	}
 }
 
-void KScreenGrabDialog::penSizeChanged( int size )
+void KScreenGrabDialog::onPenSizeChanged( int size )
 {
 	switch (m_editType)
 	{
@@ -5643,102 +5526,14 @@ void KScreenGrabDialog::fontSizeChanged(int size)
 
 void KScreenGrabDialog::setupToolbarSetting(EditType editMode)
 {
-	switch (editMode)
-	{
-	case editNone:
-		// do nothing
-		break;
-	case editRect:
-        m_actionRoundValue->setVisible(false);
-        m_actionFixedRect->setVisible(false);
-		m_actionPenSmall->setVisible(true);
-		m_actionPenMiddle->setVisible(true);
-		m_actionPenLarge->setVisible(true);
-		m_actionSeparator->setVisible(true);
-		m_actionFont->setVisible(false);
-		m_actionColor->setVisible(true);
-		break;
-	case editEllipse:
-        m_actionRoundValue->setVisible(false);
-        m_actionFixedRect->setVisible(false);
-		m_actionPenSmall->setVisible(true);
-		m_actionPenMiddle->setVisible(true);
-		m_actionPenLarge->setVisible(true);
-		m_actionSeparator->setVisible(true);
-		m_actionFont->setVisible(false);
-		m_actionColor->setVisible(true);
-		break;
-	case editArrow:
-        m_actionRoundValue->setVisible(false);
-        m_actionFixedRect->setVisible(false);
-		m_actionPenSmall->setVisible(true);
-		m_actionPenMiddle->setVisible(true);
-		m_actionPenLarge->setVisible(true);
-		m_actionSeparator->setVisible(true);
-		m_actionFont->setVisible(false);
-		m_actionColor->setVisible(true);
-		break;
-	case editBrush:
-        m_actionRoundValue->setVisible(false);
-        m_actionFixedRect->setVisible(false);
-		m_actionPenSmall->setVisible(true);
-		m_actionPenMiddle->setVisible(true);
-		m_actionPenLarge->setVisible(true);
-		m_actionSeparator->setVisible(true);
-		m_actionFont->setVisible(false);
-		m_actionColor->setVisible(true);
-		break;
-	case editMosaic:
-		m_actionRoundValue->setVisible(true);
-        m_actionFixedRect->setVisible(true);
-		m_actionPenSmall->setVisible(false);
-		m_actionPenMiddle->setVisible(false);
-		m_actionPenLarge->setVisible(false);
-		m_actionSeparator->setVisible(false);
-		m_actionFont->setVisible(false);
-		m_actionColor->setVisible(false);
-		break;
-	case editText:
-        m_actionRoundValue->setVisible(false);
-        m_actionFixedRect->setVisible(false);
-		m_actionPenSmall->setVisible(false);
-		m_actionPenMiddle->setVisible(false);
-		m_actionPenLarge->setVisible(false);
-		m_actionSeparator->setVisible(false);
-		m_actionFont->setVisible(true);
-		m_actionColor->setVisible(true);
-		break;
-	case editFilter:
-		// do nothing
-		break;
-	default:
-		break;
-	}
+	MSettingToolBarManager::instance()->onEditModeChange(editMode);
 }
 
 void KScreenGrabDialog::selectPenWidth( int width )
 {
-	switch (width)
-	{
-	case penWidthSmall:
-		m_penSmall->selected(true);
-		m_penMiddle->selected(false);
-		m_penLarge->selected(false);
-		break;
-	case penWidthMiddle:
-		m_penSmall->selected(false);
-		m_penMiddle->selected(true);
-		m_penLarge->selected(false);
-		break;
-	case penWidthLarge:
-		m_penSmall->selected(false);
-		m_penMiddle->selected(false);
-		m_penLarge->selected(true);
-		break;
-	default:
-		break;
-	}
+	MSettingToolBarManager::instance()->selectPenWidth(width);
 }
+
 void KScreenGrabDialog::onActionCopy()
 {
 	bool fromMenu = isTriggerFromMenu(qobject_cast<QAction*>(sender()));
@@ -5854,9 +5649,7 @@ void KScreenGrabDialog::hideToolBar()
 			m_tooleditbar->hide();
 #endif
 	}
-
-	if(NULL != m_toolbarSettings)
-		m_toolbarSettings->hide();
+    MSettingToolBarManager::instance()->hideSettingToolBar();
 }
 
 void KScreenGrabDialog::setToolBarVisible(bool bVisible)

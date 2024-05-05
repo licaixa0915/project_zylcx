@@ -8,6 +8,7 @@
 #include "kscrngrabdefs.h"
 #include "screengrab_menu.h"
 #include "messageboxdialog.h"
+#include "mcommon.h"
 #include <QDateTime>
 QT_BEGIN_NAMESPACE
 class QTextEdit;
@@ -91,25 +92,6 @@ class KScreenGrabDialog : public QDialog
 		cursorSizeBDiag,
 		cursorSizeFDiag,
 		cursorRestore,
-	};
-
-	enum EditType
-	{
-		editNone,
-		editRect,
-		editEllipse,
-		editArrow,
-		editBrush,
-		editMosaic,
-		editText,
-		editFilter
-	};
-
-	enum PenWidth
-	{
-		penWidthSmall = 1,
-		penWidthMiddle = 3,
-		penWidthLarge = 7,
 	};
 
 	enum exitType
@@ -455,7 +437,7 @@ private slots:
 	void onFinished(int);
 	void textChanged();
 	void colorChanged(const QColor& color);
-	void penSizeChanged(int size);
+	void onPenSizeChanged(int size);
 	void fontSizeChanged(int size);
 	void EscKeyHandler();
 	void onChangeSkinMode();
@@ -487,12 +469,6 @@ private:
 	QAction*		m_actionPin = nullptr;
 	QAction*		m_actionReSelect = nullptr;
 	QAction*		m_actionToggleToolbar = nullptr;
-	QAction*		m_actionPenSmall = nullptr;
-	QAction*		m_actionPenMiddle = nullptr;
-	QAction*		m_actionPenLarge = nullptr;
-	QAction*		m_actionFont = nullptr;
-	QAction*		m_actionSeparator = nullptr;
-	QAction*		m_actionColor = nullptr;
 	QAction*		m_actionOcr = nullptr;
 	QAction*		m_actionSave2Pdf = nullptr;
 	QAction*		m_actionSetting = nullptr;
@@ -503,24 +479,15 @@ private:
 	QAction*		m_actionDrawRoundedRect = nullptr;
 	QAction*		m_actionDrawEllipse = nullptr;
 	QAction*		m_actionDrawPolygon = nullptr;
-	QAction*		m_actionRoundValue = nullptr;
-    QAction*		m_actionFixedRect = nullptr;
 
 	KScreenGrabMenu*		m_Menu;
 	KScreenGrabToolBar*		m_toolbar = nullptr;
 	KScreenGrabToolBar*		m_tooleditbar = nullptr;
 	KScreenGrabToolBar*		m_tooleditmore = nullptr;
-	KScreenGrabToolBar*		m_toolbarSettings = nullptr;
 	KScreenGrabToolBarHeader*	m_toolbarHeader = nullptr;
-	KScreenGrabColorPicker* m_colorPicker = nullptr;
-	KScreenGrabPen*			m_penSmall = nullptr;
-	KScreenGrabPen*			m_penMiddle = nullptr;
-	KScreenGrabPen*			m_penLarge = nullptr;
 	KScreenGrabFontSetting* m_fontSetting = nullptr;
 	KScreenGrabHint*		m_hint = nullptr;
     KScreenGrabHint*        m_settingHint = nullptr;
-    KScreenGrabPen*         m_roundValueBtn = nullptr;
-    KScreenGrabPen*         m_fixedRectBtn = nullptr;
 
 	QPoint			m_screenOffset;
 
