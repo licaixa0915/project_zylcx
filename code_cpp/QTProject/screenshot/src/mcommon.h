@@ -13,4 +13,11 @@ enum EditType
     editFilter
 };
 
+enum DrawShape
+{
+    dsRect,
+    dsRoundedRect,
+    dsEllipse,
+    dsPolygon,
+};
 #endif // MCOMMON_H

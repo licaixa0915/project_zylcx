@@ -27,7 +27,7 @@ class KScreenGrabPin : public QWidget
 	Q_OBJECT
 
 public:
-	KScreenGrabPin(KScreenGrabDialog::DrawShape ds);
+    KScreenGrabPin(DrawShape ds);
 	~KScreenGrabPin();
 
 public:
@@ -77,7 +77,7 @@ private:
 	QPushButton* m_pbCopy;
 	QPushButton* m_pbSave;
 	QPushButton* m_pbClose;
-	KScreenGrabDialog::DrawShape m_drawShape;
+    DrawShape m_drawShape;
 	bool m_invisible;
 	QHBoxLayout* m_menuLayout;
 	QRect m_showRect;

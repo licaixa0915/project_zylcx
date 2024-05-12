@@ -23,6 +23,7 @@ class KGlobalShortcut;
 class KScreenGrabDialog;
 class KWindowInfo;
 class KScreenGrabTip;
+class MToolBarHeaderManager;
 
 class KScreenGrabDialog : public QDialog
 {
@@ -134,15 +135,6 @@ class KScreenGrabDialog : public QDialog
 		obPin,
 	};
 
-public:
-	enum DrawShape
-	{
-		dsRect,
-		dsRoundedRect,
-		dsEllipse,
-		dsPolygon,
-	};
-
 private:
 	enum DrawPolygonState
 	{
@@ -252,7 +244,12 @@ public:
 	explicit KScreenGrabDialog(QWidget* parent = NULL, const WId wpsWId = NULL,
 	bool isHide = true, KscrnGrabHelper::ActionFlags flags = KscrnGrabHelper::ACF_Default, DrawShape drawShape = dsRect);
     ~KScreenGrabDialog();
-	const QSize* getTooltipSizeHint(QWidget*);
+
+    MToolBarHeaderManager *toolBarHeaderManager()
+    {
+        return m_toolBarHeaderManager;
+    }
+
 protected:
 	virtual bool event(QEvent* event) override;
 	virtual bool eventFilter(QObject* obj, QEvent* event) override;
@@ -335,8 +332,6 @@ private:
 	void showToolBar();
 	void hideToolBar();
 	void setToolBarVisible(bool bVisible);
-	void showToolBarHeader();
-	void hideToolBarHeader();
 	QString pngPath(const QString& name);
 	QString resSvgPath(const QString& name, bool bOldPath = false);
 	void setEscGlobalShortcutEnable(bool bEnable);
@@ -389,14 +384,10 @@ private:
 	void hideTextEditMaskWidget();
 	void sendEditItemCollInfo();
 	void closeMoreToolBar();
+
 signals:
 	void loginSignal();
 	void upgradeVipSignal(int);
-
-	void drawRectSignal();
-	void drawEllipseSignal();
-	void drawRoundedSignal();
-	void drawPolygonSignal();
 
 	void sigDlgDone(int);
 	void sigChangeItemAction(int);
@@ -427,12 +418,7 @@ private slots:
 	void onActionSetting();
 	void onActionExportImage();
 
-	void onActionDrawRect();
-	void onActionDrawRoundedRect();
-	void onActionDrawEllipse();
-	void onActionDrawPolygon();
-	void toggleDrawAction();
-	void onDrawShapeChanged();
+    void onToggleDrawAction();
 
 	void onFinished(int);
 	void textChanged();
@@ -443,6 +429,8 @@ private slots:
 	void onChangeSkinMode();
 	void changeActionSelect(int nItemId);
 	void onActionDelete();
+
+    void onDrawShapeChanged(DrawShape shape);
 private:
 	KScrnGrabToolButton* m_toolbtnRect = nullptr;
 	KScrnGrabToolButton* m_toolbtnEllipse = nullptr;
@@ -475,16 +463,10 @@ private:
 	QAction*		m_actionExportImage = nullptr;
 	QAction*		m_actionImgTranslate = nullptr;
 
-	QAction*		m_actionDrawRect = nullptr;
-	QAction*		m_actionDrawRoundedRect = nullptr;
-	QAction*		m_actionDrawEllipse = nullptr;
-	QAction*		m_actionDrawPolygon = nullptr;
-
 	KScreenGrabMenu*		m_Menu;
 	KScreenGrabToolBar*		m_toolbar = nullptr;
 	KScreenGrabToolBar*		m_tooleditbar = nullptr;
 	KScreenGrabToolBar*		m_tooleditmore = nullptr;
-	KScreenGrabToolBarHeader*	m_toolbarHeader = nullptr;
 	KScreenGrabFontSetting* m_fontSetting = nullptr;
 	KScreenGrabHint*		m_hint = nullptr;
     KScreenGrabHint*        m_settingHint = nullptr;
@@ -584,12 +566,10 @@ private:
 	QList<OperationInfo> m_lstMenuActClickedInfo;
 
 	exitType m_exitType;
-	DrawShape m_drawShape;
 	DrawPolygonState m_polygonState;
 	bool m_isOriginPoint;
 	bool m_badSelection;
 	bool m_disableZoomBox;
-	QMap<QWidget*, QSize> m_tooltipSizeHints;
 	bool m_login;
 	bool m_upgradeVip;
     KWindowInfo*    m_windowInfo;
@@ -640,6 +620,8 @@ private:
 	QVector<QPoint> m_vecBrushPoint;
     QVector<QPoint>m_vecMosaicPoint;
 	QWidget* m_widgetTextEditMask;
+    DrawShape m_drawShape;
+    MToolBarHeaderManager *m_toolBarHeaderManager = nullptr;
 };
 
 #endif // __KSCREENGRABDIALOG_H__

@@ -241,7 +241,10 @@ KScreenGrabToolBarHeader::KScreenGrabToolBarHeader(KScreenGrabDialog* parent)
     m_moveWidget->installEventFilter(this);
     m_moveWidget->setCursor(Qt::SizeAllCursor);
 }
+KScreenGrabToolBarHeader::~KScreenGrabToolBarHeader()
+{
 
+}
 bool KScreenGrabToolBarHeader::eventFilter(QObject * obj, QEvent * e)
 {
     if (obj == m_moveWidget)

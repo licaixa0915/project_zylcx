@@ -1,6 +1,7 @@
 #include "mscreengrabtip.h"
 #include "kscreengrabdialog.h"
 #include "mscreentools.h"
+#include "mtoolbarheader.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QGraphicsDropShadowEffect>
@@ -25,7 +26,7 @@ KScreenGrabTip::KScreenGrabTip(KScreenGrabDialog* parent /*= nullptr*/)
 
 void KScreenGrabTip::reset(QWidget* btn)
 {
-    const QSize* szPtr = m_dlg->getTooltipSizeHint(btn);
+    const QSize* szPtr = m_dlg->toolBarHeaderManager()->getTooltipSizeHint(btn);
     if (szPtr)
         setGeometry(QRect(geometry().topLeft(), *szPtr));
 

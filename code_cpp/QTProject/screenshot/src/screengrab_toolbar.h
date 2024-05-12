@@ -78,6 +78,7 @@ class KScreenGrabToolBarHeader : public KScreenGrabToolBar
 
 public:
     KScreenGrabToolBarHeader(KScreenGrabDialog* parent);
+    ~KScreenGrabToolBarHeader();
 
 public:
     virtual bool eventFilter(QObject *, QEvent *);

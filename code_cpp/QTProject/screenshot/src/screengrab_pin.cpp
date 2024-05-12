@@ -89,7 +89,7 @@ void KScreenGrabPinMenu::focusOutEvent(QFocusEvent * e)
 	KScreenGrabMenu::focusOutEvent(e);
 }
 
-KScreenGrabPin::KScreenGrabPin(KScreenGrabDialog::DrawShape ds)
+KScreenGrabPin::KScreenGrabPin(DrawShape ds)
 	: m_menu(new KScreenGrabPinMenu(nullptr))
 	, m_actionShadow(nullptr)
 	, m_actionCopy(nullptr)
